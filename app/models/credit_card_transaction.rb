@@ -5,6 +5,10 @@ class CreditCardTransaction < ApplicationRecord
   scope :debit, -> { where(credit: nil) }
   scope :credit, -> { where(debit: nil) }
 
+  def self.without_credit
+    left_outer_joins(:debit_specific_credit).where(credits_debits: { debit_id: nil })
+  end
+
   def amount
     debit || credit
   end
