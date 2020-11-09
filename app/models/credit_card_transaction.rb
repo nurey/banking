@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 class CreditCardTransaction < ApplicationRecord
   has_one :debit_specific_credit, foreign_key: :debit_id
   has_one :credit_transaction, through: :debit_specific_credit, source: :credit
+
+  has_one :note
 
   scope :debit, -> { where(credit: nil) }
   scope :credit, -> { where(debit: nil) }

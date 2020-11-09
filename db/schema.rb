@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_02_184037) do
+ActiveRecord::Schema.define(version: 2020_11_08_165744) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,12 @@ ActiveRecord::Schema.define(version: 2020_08_02_184037) do
     t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["credit_id"], name: "index_credits_debits_on_credit_id", unique: true
     t.index ["debit_id"], name: "index_credits_debits_on_debit_id", unique: true
+  end
+
+  create_table "notes", force: :cascade do |t|
+    t.bigint "credit_card_transaction_id"
+    t.text "detail"
+    t.index ["credit_card_transaction_id"], name: "index_notes_on_credit_card_transaction_id"
   end
 
 end
