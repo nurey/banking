@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  post "/graphql", to: "graphql#execute"
   resources :credit_card_transactions, only: :index do
     collection do
       get 'debits'
