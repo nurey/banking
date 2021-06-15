@@ -13,6 +13,10 @@ class CreditCardTransaction < ApplicationRecord
     left_outer_joins(:debit_specific_credit).where(credits_debits: { debit_id: nil })
   end
 
+  def self.with_credit
+    joins(:debit_specific_credit)
+  end
+
   def amount
     debit || credit
   end

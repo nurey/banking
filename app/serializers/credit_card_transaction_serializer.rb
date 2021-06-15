@@ -21,7 +21,7 @@ class CreditCardTransactionSerializer
 
   attributes :tx_date, :details, :debit, :credit
 
-  has_one :credit_transaction, serializer: CreditCardTransactionSerializer, if: Proc.new { |record|
+  has_one :credit_transaction, serializer: CreditCardTransactionSerializer, if: proc { |record|
     record.credit_transaction.present?
   }
 end

@@ -9,7 +9,7 @@ module Types
     end
 
     def credit_card_transactions(**options)
-      CreditCardTransaction.all.order(options[:sort].to_h)
+      CreditCardTransaction.all.order(options[:sort])
     end
 
     field :notes, [Types::NoteType], null: false,

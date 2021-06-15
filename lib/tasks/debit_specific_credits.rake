@@ -1,21 +1,28 @@
 namespace :debit_specific_credits do
-  desc "Create debit-specific credits"
+  desc 'Create debit-specific credits'
   task create: :environment do
     list = DoublyLinkedList.new
-    CreditCardTransaction.where("tx_date >= '2020-01-01'").order(id: :desc).each do |tx|
+    CreditCardTransaction.without_credit.where('tx_date >= ?', '2020-01-01').order(id: :desc).each do |tx|
       list.push(tx)
     end
 
     list.each do |node|
       tx = node.data
-      if tx.debit?
-        puts "calling node.find on node data id #{tx.id}"
-        credit_node = list.find_near(node) { |other_node| other_node.data.credit? && other_node.data.amount == tx.amount }
-        if credit_node
-          puts "found credit (#{credit_node.data.to_s}) for debit #{tx.to_s}"
+      next unless tx.debit?
+
+      puts "calling node.find on node data id #{tx.id}"
+      credit_node = list.find_near(node) { |other_node| other_node.data.credit? && other_node.data.amount == tx.amount }
+      if credit_node
+        puts "found credit (#{credit_node.data}) for debit #{tx}"
+        begin
           DebitSpecificCredit.create(debit_id: tx.id, credit_id: credit_node.data.id)
-          list.delete(credit_node)
+        rescue ActiveRecord::RecordNotUnique, PG::UniqueViolation
+          puts "Failed to insert DebitSpecificCredit with debit_id #{tx.id} and credit_id #{credit_node.data.id}"
         end
+
+        list.delete(credit_node)
+      else
+        puts "no credit found for debit #{tx}"
       end
     end
   end
@@ -94,7 +101,7 @@ class DoublyLinkedList
 
   def _each
     curr_node = @head
-    while(curr_node)
+    while (curr_node)
       yield curr_node
       curr_node = curr_node.next
     end
