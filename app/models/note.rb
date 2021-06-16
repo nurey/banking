@@ -14,5 +14,9 @@ end
 #
 # Indexes
 #
-#  index_notes_on_credit_card_transaction_id  (credit_card_transaction_id)
+#  index_notes_on_credit_card_transaction_id  (credit_card_transaction_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (credit_card_transaction_id => credit_card_transactions.id)
 #
