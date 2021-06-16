@@ -9,8 +9,14 @@ module Mutations
     field :errors, [String], null: false
 
     def resolve(detail:, credit_card_transaction_id:)
-      note = Note.new(detail: detail, credit_card_transaction_id: credit_card_transaction_id)
-      if note.save
+      Note.upsert(
+        {
+          detail: detail,
+          credit_card_transaction_id: credit_card_transaction_id
+        },
+        unique_by: :credit_card_transaction_id
+      )
+      if (note = Note.find_by(credit_card_transaction_id: credit_card_transaction_id))
         {
           note: note,
           errors: []
@@ -18,7 +24,7 @@ module Mutations
       else
         {
           note: nil,
-          errors: note.errors.full_messages
+          errors: 'Something went wrong'
         }
       end
     end

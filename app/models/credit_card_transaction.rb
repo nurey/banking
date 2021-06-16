@@ -5,6 +5,7 @@ class CreditCardTransaction < ApplicationRecord
   has_one :credit_transaction, through: :debit_specific_credit, source: :credit
 
   has_one :note
+  accepts_nested_attributes_for :note
 
   scope :debit, -> { where(credit: nil) }
   scope :credit, -> { where(debit: nil) }
