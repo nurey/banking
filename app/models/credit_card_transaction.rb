@@ -8,7 +8,13 @@ class CreditCardTransaction < ApplicationRecord
   accepts_nested_attributes_for :note
 
   scope :debit, -> { where(credit: nil) }
+
   scope :credit, -> { where(debit: nil) }
+
+  scope :without_notes, -> do
+    # exclude annotated transactions
+    left_outer_joins(:note).where(notes: { id: nil })
+  end
 
   def self.without_credit
     left_outer_joins(:debit_specific_credit).where(credits_debits: { debit_id: nil })
