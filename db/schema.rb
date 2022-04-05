@@ -10,18 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_08_165744) do
+ActiveRecord::Schema.define(version: 2022_04_05_150328) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "cibc_visa", id: :serial, force: :cascade do |t|
-    t.date "date"
-    t.text "details"
-    t.decimal "debit"
-    t.decimal "credit"
-    t.text "card_number"
-  end
 
   create_table "credit_card_transactions", force: :cascade do |t|
     t.date "tx_date"
@@ -31,6 +23,8 @@ ActiveRecord::Schema.define(version: 2020_11_08_165744) do
     t.text "card_number"
     t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["tx_date", "details", "credit"], name: "credit_card_transactions_credits_unique_key", unique: true, where: "(debit IS NULL)"
+    t.index ["tx_date", "details", "debit"], name: "credit_card_transactions_debits_unique_key", unique: true, where: "(credit IS NULL)"
   end
 
   create_table "credits_debits", force: :cascade do |t|
