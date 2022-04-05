@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_05_150328) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_04_05_150328) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,8 +20,8 @@ ActiveRecord::Schema.define(version: 2022_04_05_150328) do
     t.decimal "debit"
     t.decimal "credit"
     t.text "card_number"
-    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["tx_date", "details", "credit"], name: "credit_card_transactions_credits_unique_key", unique: true, where: "(debit IS NULL)"
     t.index ["tx_date", "details", "debit"], name: "credit_card_transactions_debits_unique_key", unique: true, where: "(credit IS NULL)"
   end
@@ -31,8 +30,8 @@ ActiveRecord::Schema.define(version: 2022_04_05_150328) do
     t.bigint "credit_id"
     t.bigint "debit_id"
     t.text "details"
-    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["credit_id"], name: "index_credits_debits_on_credit_id", unique: true
     t.index ["debit_id"], name: "index_credits_debits_on_debit_id", unique: true
   end
