@@ -7,13 +7,13 @@ module Types
       description 'Returns a list of credit card transactions'
       argument :sort, [Types::Enum::CreditCardTransactionSort], required: false, default_value: []
       argument :show_annotated, Boolean, required: false, default_value: true
+      argument :show_credits, Boolean, required: false, default_value: true
     end
 
     def credit_card_transactions(**options)
-      scope = CreditCardTransaction.all.order(options[:sort])
-      unless options[:show_annotated]
-        scope = scope.without_notes
-      end
+      scope = CreditCardTransaction.where(tx_date: 12.months.ago..).order(options[:sort])
+      scope = scope.without_notes unless options[:show_annotated]
+      scope = scope.debit unless options[:show_credits]
 
       scope
     end

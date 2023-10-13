@@ -13,6 +13,7 @@ class CreditCardTransaction < ApplicationRecord
 
   scope :without_notes, -> do
     # exclude annotated transactions
+    # TODO: empty notes should count as no notes
     left_outer_joins(:note).where(notes: { id: nil })
   end
 
