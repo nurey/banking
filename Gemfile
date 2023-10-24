@@ -6,7 +6,7 @@ ruby '>= 3.0.2'
 gem 'jsonapi-serializer'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.0.4.2', '>= 7.0'
+gem 'rails', '~> 7.1.1', '>= 7.0'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
