@@ -52,10 +52,11 @@ builder:
 #         - POSTGRES_PASSWORD
 
 # Configure custom arguments for Traefik
-# traefik:
-#   args:
-#     accesslog: true
-#     accesslog.format: json
+traefik:
+  host_port: 3000
+  # args:
+  #   accesslog: true
+  #   accesslog.format: json
 
 # Configure a custom healthcheck (default is /up on port 3000)
 # healthcheck:
