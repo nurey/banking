@@ -264,12 +264,11 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.3.0)
-    webrick (1.7.0)
+    webrick (1.8.1)
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    yard (0.9.28)
-      webrick (~> 1.7.0)
+    yard (0.9.36)
     zeitwerk (2.6.15)
 
 PLATFORMS
