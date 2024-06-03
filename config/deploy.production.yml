@@ -35,6 +35,7 @@ env:
     DB_HOST: 168.235.69.227
     POSTGRES_USER: budgetr_app
     POSTGRES_DB: banking_production
+    CORS_ORIGINS: https://budgetr-app.nurey.com
   secret:
     - RAILS_MASTER_KEY
     - POSTGRES_PASSWORD
