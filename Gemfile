@@ -6,7 +6,7 @@ ruby '>= 3.0.2'
 gem 'jsonapi-serializer'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.2.1', '>= 7.0'
+gem 'rails', '~> 7.2.2.2', '>= 7.0'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
@@ -32,15 +32,12 @@ gem 'graphql'
 gem 'graphql-batch'
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '~> 5.0'
 end
 
 group :development do
   gem 'annotate', '~> 3.2.0'
   gem 'listen', '~> 3.2'
-  gem 'solargraph', '~> 0.39'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 end
