@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_05_150328) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_12_222741) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "credit_card_transactions", force: :cascade do |t|
     t.date "tx_date"
