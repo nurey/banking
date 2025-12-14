@@ -17,8 +17,8 @@ This application provides a RESTful API and GraphQL interface for tracking and a
 
 ## Tech Stack
 
-- **Ruby**: 3.4.5
-- **Rails**: 7.2.2.2 (API mode)
+- **Ruby**: 3.4.7
+- **Rails**: 8.1.1 (API mode)
 - **Database**: PostgreSQL
 - **GraphQL**: GraphQL with GraphQL Batch for efficient queries
 - **Serialization**: JSONAPI Serializer
@@ -59,7 +59,7 @@ This application provides a RESTful API and GraphQL interface for tracking and a
 ## Setup
 
 ### Prerequisites
-- Ruby 3.4.5
+- Ruby 3.4.7
 - PostgreSQL
 - Docker (for containerized deployment)
 
