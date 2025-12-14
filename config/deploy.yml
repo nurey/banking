@@ -6,7 +6,11 @@ image: nurey/budgetr
 
 # Deploy to these servers.
 servers:
-  - 10.0.0.218
+  web:
+    hosts:
+      - 10.0.0.218
+    options:
+      network: "private"
 
 # Credentials for your image host.
 registry:
@@ -35,9 +39,9 @@ ssh:
 
 # Configure builder setup.
 builder:
-  remote:
-    arch: amd64
-    host: ssh://ilia@10.0.0.218
+#remote: ssh://ilia@10.0.0.218
+  arch: amd64
+  local: true
 
 # Use accessory services (secrets come from .env).
 # accessories:
@@ -51,12 +55,11 @@ builder:
 #       secret:
 #         - POSTGRES_PASSWORD
 
-# Configure custom arguments for Traefik
-traefik:
-  host_port: 3000
-  # args:
-  #   accesslog: true
-  #   accesslog.format: json
+# Configure Kamal Proxy
+proxy:
+  ssl: false
+  app_port: 3000
+
 
 # Configure a custom healthcheck (default is /up on port 3000)
 # healthcheck:
