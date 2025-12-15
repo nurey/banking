@@ -36,6 +36,8 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'bundler-audit', require: false
   gem 'rspec-rails', '~> 5.0'
+  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
+  gem 'rubocop-rails-omakase', require: false
 end
 
 group :development do
