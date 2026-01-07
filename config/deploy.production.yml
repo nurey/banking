@@ -28,6 +28,7 @@ env:
     POSTGRES_USER: budgetr_app
     POSTGRES_DB: banking_production
     CORS_ORIGINS: https://budgetr-app.nurey.com
+    WEB_CONCURRENCY: "auto"
   secret:
     - RAILS_MASTER_KEY
     - POSTGRES_PASSWORD
