@@ -21,6 +21,6 @@ class CreditCardTransactionsController < ApplicationController
   def debits_with_credits
     debits = CreditCardTransaction.debit.with_credit.includes(:credit_transaction).order(tx_date: :desc).limit(100)
 
-    render json: CreditCardTransactionSerializer.new(debits, { include: [:credit_transaction] }).serializable_hash
+    render json: CreditCardTransactionSerializer.new(debits, { include: [ :credit_transaction ] }).serializable_hash
   end
 end

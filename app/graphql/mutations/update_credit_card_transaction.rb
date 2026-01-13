@@ -7,7 +7,7 @@ module Mutations
     argument :id, ID, required: true
 
     field :credit_card_transaction, Types::CreditCardTransactionType, null: true
-    field :errors, [String], null: false
+    field :errors, [ String ], null: false
 
     def resolve(note_detail:, note_id: nil, id:)
       tx = CreditCardTransaction.find_by!(id: id)

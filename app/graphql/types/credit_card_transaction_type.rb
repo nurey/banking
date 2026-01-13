@@ -1,6 +1,6 @@
 module Types
   class CreditCardTransactionType < Types::BaseObject
-    description 'A Credit Card Transaction'
+    description "A Credit Card Transaction"
     field :id, ID, null: false
     field :tx_date, GraphQL::Types::ISO8601Date, null: true
     field :details, String, null: true

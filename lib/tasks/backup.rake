@@ -1,5 +1,5 @@
 namespace :db do
-  desc 'backup the database'
+  desc "backup the database"
   task backup: :environment do
     db = ActiveRecord::Base.connection.current_database
     destination = Rails.root.join("db/#{db}.dump")
