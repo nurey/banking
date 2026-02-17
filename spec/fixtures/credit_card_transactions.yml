@@ -1,0 +1,29 @@
+recent_debit:
+  tx_date: <%= 2.months.ago.to_date %>
+  details: "GROCERY STORE <%= SecureRandom.hex(4) %>"
+  debit: 45.99
+  card_number: "1234"
+
+annotated_debit:
+  tx_date: <%= 3.months.ago.to_date %>
+  details: "RESTAURANT DINNER <%= SecureRandom.hex(4) %>"
+  debit: 82.50
+  card_number: "1234"
+
+recent_credit:
+  tx_date: <%= 1.month.ago.to_date %>
+  details: "PAYMENT RECEIVED <%= SecureRandom.hex(4) %>"
+  credit: 500.00
+  card_number: "1234"
+
+boundary_debit:
+  tx_date: <%= 12.months.ago.to_date %>
+  details: "BOUNDARY PURCHASE <%= SecureRandom.hex(4) %>"
+  debit: 15.00
+  card_number: "5678"
+
+old_debit:
+  tx_date: <%= 13.months.ago.to_date %>
+  details: "OLD PURCHASE <%= SecureRandom.hex(4) %>"
+  debit: 20.00
+  card_number: "5678"
