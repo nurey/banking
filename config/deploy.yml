@@ -27,6 +27,7 @@ env:
     DB_HOST: 10.0.0.218
     POSTGRES_USER: budgetr_app
     POSTGRES_DB: banking_production
+    WEB_CONCURRENCY: "auto"
   secret:
     - RAILS_MASTER_KEY
     - POSTGRES_PASSWORD
