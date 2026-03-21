@@ -1,3 +1,4 @@
+# rbs_inline: enabled
 # frozen_string_literal: true
 
 class CreditCardTransaction < ApplicationRecord
@@ -17,26 +18,32 @@ class CreditCardTransaction < ApplicationRecord
     left_outer_joins(:note).where(notes: { id: nil })
   end
 
+  # @rbs return: ActiveRecord::Relation[CreditCardTransaction]
   def self.without_credit
     left_outer_joins(:debit_specific_credit).where(credits_debits: { debit_id: nil })
   end
 
+  # @rbs return: ActiveRecord::Relation[CreditCardTransaction]
   def self.with_credit
     joins(:debit_specific_credit)
   end
 
+  # @rbs return: BigDecimal?
   def amount
     debit || credit
   end
 
+  # @rbs return: bool
   def debit?
     credit.nil? && debit.present?
   end
 
+  # @rbs return: bool
   def credit?
     debit.nil? && credit.present?
   end
 
+  # @rbs return: String
   def to_s
     "#{id}-#{tx_date}-$#{amount}-#{details}"
   end

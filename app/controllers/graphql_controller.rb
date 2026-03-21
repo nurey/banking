@@ -1,9 +1,15 @@
+# rbs_inline: enabled
+
+# @rbs!
+#   type json = String | Integer | Float | bool | nil | Array[json] | Hash[String, json]
+
 class GraphqlController < ApplicationController
   # If accessing from outside this domain, nullify the session
   # This allows for outside API access while preventing CSRF attacks,
   # but you'll have to authenticate your user separately
   # protect_from_forgery with: :null_session
 
+  # @rbs return: void
   def execute
     variables = prepare_variables(params[:variables])
     query = params[:query]
@@ -22,6 +28,9 @@ class GraphqlController < ApplicationController
   private
 
   # Handle variables in form data, JSON body, or a blank value
+  #
+  # @rbs variables_param: String | Hash[String, json] | ActionController::Parameters | nil
+  # @rbs return: Hash[String, json]
   def prepare_variables(variables_param)
     case variables_param
     when String
@@ -41,6 +50,8 @@ class GraphqlController < ApplicationController
     end
   end
 
+  # @rbs e: StandardError
+  # @rbs return: void
   def handle_error_in_development(e)
     logger.error e.message
     logger.error e.backtrace.join("\n")

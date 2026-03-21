@@ -42,5 +42,6 @@ end
 
 group :development do
   gem 'annotaterb', '~> 4.20.0'
+  gem 'rbs', '~> 4.0', require: false
   gem 'web-console'
 end

@@ -1,4 +1,6 @@
+# rbs_inline: enabled
 # frozen_string_literal: true
+
 class DebitSpecificCredit < ApplicationRecord
   self.table_name = 'credits_debits'
 
