@@ -4,8 +4,8 @@ module Types
     field :id, ID, null: false
     field :tx_date, GraphQL::Types::ISO8601Date, null: true
     field :details, String, null: true
-    field :debit, Float, null: true
-    field :credit, Float, null: true
+    field :debit, Integer, null: true
+    field :credit, Integer, null: true
     field :card_number, String, null: true
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false

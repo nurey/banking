@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: notes
+#
+#  id                         :bigint           not null, primary key
+#  detail                     :text
+#  credit_card_transaction_id :bigint
+#
+# Indexes
+#
+#  index_notes_on_credit_card_transaction_id  (credit_card_transaction_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (credit_card_transaction_id => credit_card_transactions.id)
+#
 annotated_note:
   credit_card_transaction: annotated_debit
   detail: "Business dinner expense"

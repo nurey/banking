@@ -28,7 +28,7 @@ class CreditCardTransaction < ApplicationRecord
     joins(:debit_specific_credit)
   end
 
-  # @rbs return: BigDecimal?
+  # @rbs return: Integer?
   def amount
     debit || credit
   end
@@ -45,7 +45,8 @@ class CreditCardTransaction < ApplicationRecord
 
   # @rbs return: String
   def to_s
-    "#{id}-#{tx_date}-$#{amount}-#{details}"
+    formatted = amount ? format('$%.2f', amount / 100.0) : '$0.00'
+    "#{id}-#{tx_date}-#{formatted}-#{details}"
   end
 end
 
@@ -55,8 +56,8 @@ end
 #
 #  id          :bigint           not null, primary key
 #  card_number :text
-#  credit      :decimal(, )
-#  debit       :decimal(, )
+#  credit      :integer
+#  debit       :integer
 #  details     :text
 #  tx_date     :date
 #  created_at  :datetime         not null

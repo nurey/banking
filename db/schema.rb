@@ -10,27 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_12_222741) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_22_222234) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "credit_card_transactions", force: :cascade do |t|
-    t.date "tx_date"
-    t.text "details"
-    t.decimal "debit"
-    t.decimal "credit"
     t.text "card_number"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.integer "credit"
+    t.integer "debit"
+    t.text "details"
+    t.date "tx_date"
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["tx_date", "details", "credit"], name: "credit_card_transactions_credits_unique_key", unique: true, where: "(debit IS NULL)"
     t.index ["tx_date", "details", "debit"], name: "credit_card_transactions_debits_unique_key", unique: true, where: "(credit IS NULL)"
   end
 
   create_table "credits_debits", force: :cascade do |t|
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "credit_id"
     t.bigint "debit_id"
     t.text "details"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["credit_id"], name: "index_credits_debits_on_credit_id", unique: true
     t.index ["debit_id"], name: "index_credits_debits_on_debit_id", unique: true

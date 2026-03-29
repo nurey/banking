@@ -6,8 +6,8 @@
 #
 #  id          :bigint           not null, primary key
 #  card_number :text
-#  credit      :decimal(, )
-#  debit       :decimal(, )
+#  credit      :integer
+#  debit       :integer
 #  details     :text
 #  tx_date     :date
 #  created_at  :datetime         not null

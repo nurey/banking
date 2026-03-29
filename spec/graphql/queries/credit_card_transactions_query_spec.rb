@@ -64,7 +64,7 @@ RSpec.describe "creditCardTransactions query" do
 
     expect(tx_data["txDate"]).to eq(tx.tx_date.iso8601)
     expect(tx_data["details"]).to eq(tx.details)
-    expect(tx_data["debit"]).to eq(tx.debit.to_f)
+    expect(tx_data["debit"]).to eq(tx.debit)
     expect(tx_data["credit"]).to be_nil
     expect(tx_data["cardNumber"]).to eq(tx.card_number)
     expect(tx_data["createdAt"]).to be_present

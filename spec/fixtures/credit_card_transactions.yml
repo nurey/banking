@@ -1,29 +1,47 @@
+# == Schema Information
+#
+# Table name: credit_card_transactions
+#
+#  id          :bigint           not null, primary key
+#  card_number :text
+#  credit      :integer
+#  debit       :integer
+#  details     :text
+#  tx_date     :date
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+# Indexes
+#
+#  credit_card_transactions_credits_unique_key  (tx_date,details,credit) UNIQUE WHERE (debit IS NULL)
+#  credit_card_transactions_debits_unique_key   (tx_date,details,debit) UNIQUE WHERE (credit IS NULL)
+#
 recent_debit:
   tx_date: <%= 2.months.ago.to_date %>
   details: "GROCERY STORE <%= SecureRandom.hex(4) %>"
-  debit: 45.99
+  debit: 4599
   card_number: "1234"
 
 annotated_debit:
   tx_date: <%= 3.months.ago.to_date %>
   details: "RESTAURANT DINNER <%= SecureRandom.hex(4) %>"
-  debit: 82.50
+  debit: 8250
   card_number: "1234"
 
 recent_credit:
   tx_date: <%= 1.month.ago.to_date %>
   details: "PAYMENT RECEIVED <%= SecureRandom.hex(4) %>"
-  credit: 500.00
+  credit: 50000
   card_number: "1234"
 
 boundary_debit:
   tx_date: <%= 12.months.ago.to_date %>
   details: "BOUNDARY PURCHASE <%= SecureRandom.hex(4) %>"
-  debit: 15.00
+  debit: 1500
   card_number: "5678"
 
 old_debit:
   tx_date: <%= 13.months.ago.to_date %>
   details: "OLD PURCHASE <%= SecureRandom.hex(4) %>"
-  debit: 20.00
+  debit: 2000
   card_number: "5678"
