@@ -38,9 +38,8 @@ ssh:
 
 # Configure builder setup.
 builder:
-#remote: ssh://ilia@10.0.0.218
   arch: amd64
-  local: true
+  remote: ssh://ilia@10.0.0.218
 
 # Use accessory services (secrets come from .env).
 # accessories:
