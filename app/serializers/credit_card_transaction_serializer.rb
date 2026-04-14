@@ -12,11 +12,17 @@
 #  tx_date     :date
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  user_id     :bigint           not null
 #
 # Indexes
 #
-#  credit_card_transactions_credits_unique_key  (tx_date,details,credit) UNIQUE WHERE (debit IS NULL)
-#  credit_card_transactions_debits_unique_key   (tx_date,details,debit) UNIQUE WHERE (credit IS NULL)
+#  credit_card_transactions_credits_unique_key  (user_id,tx_date,details,credit) UNIQUE WHERE (debit IS NULL)
+#  credit_card_transactions_debits_unique_key   (user_id,tx_date,details,debit) UNIQUE WHERE (credit IS NULL)
+#  index_credit_card_transactions_on_user_id    (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
 #
 class CreditCardTransactionSerializer
   include FastJsonapi::ObjectSerializer

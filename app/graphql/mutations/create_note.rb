@@ -9,6 +9,9 @@ module Mutations
     field :errors, [String], null: false
 
     def resolve(detail:, credit_card_transaction_id:)
+      # Verify the transaction belongs to the current user
+      context[:current_user].credit_card_transactions.find_by!(id: credit_card_transaction_id)
+
       Note.upsert(
         {
           detail: detail,

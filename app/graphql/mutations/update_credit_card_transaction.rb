@@ -10,7 +10,7 @@ module Mutations
     field :errors, [String], null: false
 
     def resolve(note_detail:, note_id: nil, id:)
-      tx = CreditCardTransaction.find_by!(id: id)
+      tx = context[:current_user].credit_card_transactions.find_by!(id: id)
       if tx.update(note_attributes: { detail: note_detail, id: note_id })
         {
           credit_card_transaction: tx,

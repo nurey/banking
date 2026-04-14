@@ -3,6 +3,8 @@
 ## Conventions
 
 - **No co-authored-by lines** in commit messages or PR descriptions
+- **No two-phase deploys** during this feature's implementation — migrations and dependent code ship together in each PR
+- **httpOnly cookies for auth** — no localStorage, no Bearer tokens, no JWT. The browser handles cookie storage and sending via `credentials: 'include'`
 
 ## Context
 
@@ -55,57 +57,41 @@ Three projects are involved:
 
 ## Part 1: User Authentication
 
-### Approach: Rails 8 built-in authentication generator (`--api`)
+### Approach: Rails 8 built-in auth generator + httpOnly cookies
 
-**Why the built-in generator:** Rails 8.1 ships with `bin/rails generate authentication --api` which creates a complete token-based auth system. It uses server-side session tokens (stored in a `sessions` table) sent via `Authorization: Bearer <token>` headers — works identically with Apollo Client. No custom JWT code to maintain.
+**Why the built-in generator:** Rails 8.1 ships with `bin/rails generate authentication` which creates a complete session-based auth system. We adapt it for API-only mode with JSON responses.
 
-**Why not JWT:** The generator provides revocable tokens (delete the session row), session tracking (IP, user agent), and password reset — all out of the box. JWT requires a custom implementation, can't be revoked without a blocklist, and needs secret key management.
+**Why httpOnly cookies (not Bearer tokens or JWT):** Production uses HTTPS (Kamal proxy terminates SSL), so `SameSite=None; Secure` cookies work cross-origin. httpOnly cookies can't be read by JavaScript, eliminating XSS token theft. The browser handles cookie storage and sending automatically — no localStorage, no token management in the frontend.
 
 **Why not Devise:** Overkill for this app — one user table, no OAuth, no confirmable/lockable.
 
-### What the generator creates
+### What the generator creates (adapted for API-only)
 
 | File | Purpose |
 |------|---------|
 | `app/models/user.rb` | `has_secure_password`, `has_many :sessions`, `normalizes :email_address` |
-| `app/models/session.rb` | Token-based session record (user_id, ip_address, user_agent) |
+| `app/models/session.rb` | Session record (user_id, ip_address, user_agent, token) |
 | `app/models/current.rb` | Thread-local `Current.user` / `Current.session` |
-| `app/controllers/concerns/authentication.rb` | `require_authentication`, `current_user`, token lookup via `Authorization: Bearer` |
-| `app/controllers/sessions_controller.rb` | `POST /session` (login), `DELETE /session` (logout) |
-| `app/controllers/passwords_controller.rb` | Password reset endpoints |
+| `app/controllers/concerns/authentication.rb` | `require_authentication`, session lookup via signed `session_id` cookie, returns 401 JSON (not redirect) |
+| `app/controllers/sessions_controller.rb` | `GET /session` (whoami), `POST /session` (login), `DELETE /session` (logout) — all JSON |
+| `app/controllers/passwords_controller.rb` | Password reset (JSON) |
 | `db/migrate/*_create_users.rb` | `email_address` (unique), `password_digest` |
-| `db/migrate/*_create_sessions.rb` | `user_id`, `ip_address`, `user_agent` |
+| `db/migrate/*_create_sessions.rb` | `user_id`, `token`, `ip_address`, `user_agent` |
 
 ### What we add on top
 
 | File | Purpose |
 |------|---------|
-| `app/controllers/registrations_controller.rb` | `POST /registration` — create user + session, return token |
+| `app/controllers/registrations_controller.rb` | `POST /registration` — create user + session, set cookie, return JSON |
+| `config/application.rb` | Add `ActionDispatch::Cookies` and `ActionDispatch::Session::CookieStore` middleware (stripped by `api_only`) |
+| `app/controllers/application_controller.rb` | Include `ActionController::Cookies` |
+| `config/initializers/cors.rb` | `credentials: true`, specific origin (not wildcard) |
 
-The generator does not include registration. We add a single controller for that.
+### Cookie details
 
-### Database tables
-
-```sql
--- Created by generator
-CREATE TABLE users (
-  id               bigserial PRIMARY KEY,
-  email_address    varchar NOT NULL,
-  password_digest  varchar NOT NULL,
-  created_at       timestamptz NOT NULL,
-  updated_at       timestamptz NOT NULL,
-  UNIQUE(email_address)
-);
-
-CREATE TABLE sessions (
-  id         bigserial PRIMARY KEY,
-  user_id    bigint NOT NULL REFERENCES users(id),
-  ip_address varchar,
-  user_agent varchar,
-  created_at timestamptz NOT NULL,
-  updated_at timestamptz NOT NULL
-);
-```
+- `cookies.signed.permanent[:session_id]` — signed by Rails (tamper-proof), httpOnly (no JS access), Secure in production, `SameSite=None` in production (cross-origin)
+- Session lookup: `Session.find_by(id: cookies.signed[:session_id])`
+- Frontend checks auth status via `GET /session` on page load (returns 200 with user or 401)
 
 ### Auth in GraphQL + REST
 
@@ -113,36 +99,25 @@ CREATE TABLE sessions (
 - `GraphqlController#execute` passes `Current.user` into GraphQL context
 - All resolvers scope queries through `context[:current_user]`
 - All REST controller actions scope through `Current.user`
-- Missing/invalid token → 401 response (handled by the concern)
+- Missing/invalid cookie → 401 response (handled by the concern)
 
 ### Frontend files
 
 | File | Purpose |
 |------|---------|
-| `src/components/LoginPage.jsx` | Email + password form, stores session token in localStorage |
+| `src/components/LoginPage.jsx` | Email + password form |
 | `src/components/RegisterPage.jsx` | Registration form |
-| `src/hooks/useAuth.js` | Auth state context — `login()`, `logout()`, `isAuthenticated` |
+| `src/hooks/useAuth.jsx` | Auth state via `GET /session` check — `login()`, `register()`, `logout()`, `isAuthenticated`, `user`, `loading` |
 
-**Apollo Client change** (`src/index.jsx`):
+**Apollo Client change** (`src/index.jsx`) — just `credentials: 'include'`, no auth headers:
 ```js
-import { setContext } from '@apollo/client/link/context';
-
-const authLink = setContext((_, { headers }) => ({
-  headers: {
-    ...headers,
-    authorization: localStorage.getItem('token')
-      ? `Bearer ${localStorage.getItem('token')}`
-      : '',
-  },
-}));
-
-const client = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
+const httpLink = new HttpLink({
+  uri: import.meta.env.VITE_GRAPHQL_URI,
+  credentials: 'include',
 });
 ```
 
-**Routing:** Add `react-router-dom` for login/register/dashboard pages. Unauthenticated users → login page. 401 from API → clear token, redirect to login.
+**Routing:** `react-router-dom` with `ProtectedRoute` (redirect to `/login` if unauthenticated) and `PublicRoute` (redirect to `/` if already authenticated).
 
 ---
 
@@ -367,9 +342,12 @@ Tests first (red):
 
 Then implementation (green):
 3. Run `bin/rails generate authentication` — creates User, Session, Current models, Authentication concern, SessionsController, PasswordsController, migrations
-4. `app/controllers/registrations_controller.rb` — `POST /registration` (generator doesn't include signup)
-5. `config/routes.rb` — add `resource :registration, only: :create`
-6. Pass `Current.user` into GraphQL context in `graphql_controller.rb`
+4. Adapt generated code for API-only + httpOnly cookies: JSON responses (not redirects), `cookies.signed[:session_id]` lookup, add cookie middleware to `config/application.rb`, include `ActionController::Cookies` in ApplicationController
+5. `app/controllers/registrations_controller.rb` — `POST /registration` (generator doesn't include signup)
+6. `app/controllers/sessions_controller.rb` — add `GET /session` (whoami) action
+7. `config/routes.rb` — add `resource :registration, only: :create`, add `:show` to session
+8. `config/initializers/cors.rb` — `credentials: true`, specific origin
+9. Pass `Current.user` into GraphQL context in `graphql_controller.rb`
 
 - **Deploy note:** Auth endpoints exist but nothing requires auth yet. Existing API continues to work unauthenticated.
 
@@ -395,24 +373,22 @@ Then implementation (green):
 14. Lock down CORS origins in `cors.rb`
 15. Update fixtures to include `user_id`
 
-- **Deploy note:** Two-phase — deploy migration + backfill first, then deploy auth enforcement. After this PR, the API requires a JWT.
+- **Deploy note:** After this PR, the API requires authentication via session cookie.
 
 ### PR3: `feat/auth-frontend` → `feat/transaction-isolation`
 **Login/register UI + protected routes (frontend)**
 
 Tests first (red):
-1. `src/hooks/useAuth.test.js` — login stores session token, logout calls DELETE /session and clears token, isAuthenticated reflects state
-2. `src/components/LoginPage.test.jsx` — renders form, submits credentials to POST /session, shows error on failure, redirects on success
-3. `src/components/RegisterPage.test.jsx` — renders form, submits to POST /registration, shows error on duplicate email
+1. `src/hooks/useAuth.test.jsx` — session check on mount sets isAuthenticated; login sets user on success; login throws on invalid credentials; logout clears user
 
 Then implementation (green):
-4. Add `react-router-dom`, `@testing-library/react` dependencies
-5. `src/hooks/useAuth.js` — auth context, `login()` (POST /session), `register()` (POST /registration), `logout()` (DELETE /session), `isAuthenticated`
-6. `src/components/LoginPage.jsx` — email + password form
-7. `src/components/RegisterPage.jsx` — registration form
-8. `src/index.jsx` — Apollo `setContext` auth link with Bearer token, error link for 401 → redirect
-9. `src/components/App.jsx` — route setup, protected routes
-10. `src/components/AppNavbar.jsx` — user email display, logout button
+2. Add `react-router-dom`, `@testing-library/react` dependencies
+3. `src/hooks/useAuth.jsx` — auth state via `GET /session` on mount, `login()`, `register()`, `logout()` with `credentials: 'include'`, no localStorage
+4. `src/components/LoginPage.jsx` — email + password form
+5. `src/components/RegisterPage.jsx` — registration form
+6. `src/index.jsx` — Apollo HttpLink with `credentials: 'include'`, BrowserRouter, AuthProvider wrapping
+7. `src/components/App.jsx` — ProtectedRoute/PublicRoute wrappers, react-router-dom Routes
+8. `src/components/AppNavbar.jsx` — user email display, logout button
 
 - **Deploy note:** Can deploy frontend before or after PR2, but the app will require login once both are live.
 
@@ -508,7 +484,7 @@ Then implementation (green):
 ### Modified files (banking)
 | File | Change |
 |------|--------|
-| `Gemfile` | Add `solid_queue`, `vcr`, `webmock`; uncomment `bcrypt` |
+| `Gemfile` | Add `solid_queue`, `vcr`, `webmock`, `bcrypt` (added by auth generator) |
 | `config/application.rb` | Uncomment `active_job/railtie` |
 | `config/routes.rb` | Auth routes (generated), registration route, Flinks callback |
 | `config/environments/production.rb` | `queue_adapter = :solid_queue` |
@@ -527,7 +503,7 @@ Then implementation (green):
 |------|---------|
 | `src/components/LoginPage.jsx` | Login form (POST /session) |
 | `src/components/RegisterPage.jsx` | Registration form (POST /registration) |
-| `src/hooks/useAuth.js` | Auth context — login, register, logout, token in localStorage |
+| `src/hooks/useAuth.jsx` | Auth context — login, register, logout via httpOnly cookies (no localStorage) |
 | `src/components/FlinksConnect.jsx` | Bank connection widget |
 | `src/components/ImportStatus.jsx` | Sync status + manual trigger |
 
@@ -535,17 +511,92 @@ Then implementation (green):
 | File | Change |
 |------|--------|
 | `package.json` | Add `react-router-dom` |
-| `src/index.jsx` | Apollo auth link, router setup |
+| `src/index.jsx` | Apollo `credentials: 'include'`, BrowserRouter, AuthProvider |
 | `src/components/App.jsx` | Protected routes, import status |
 | `src/components/AppNavbar.jsx` | User email, logout, settings |
 
 ---
 
+## Security Audit Findings
+
+Address before shipping. Integrate fixes into the relevant PRs.
+
+### CRITICAL
+
+**CSRF with `SameSite=None` cookies.** CORS only prevents reading the response — it does not block the request. Any website can forge `POST /graphql` mutations and the browser attaches the session cookie. Fix: add Origin header verification as a `before_action` on `ApplicationController` — reject non-GET requests where `request.headers['Origin']` doesn't match the allowed origin.
+
+- File: `app/controllers/application_controller.rb`
+- Belongs in: PR1
+
+### HIGH
+
+**Sessions never expire.** `cookies.signed.permanent` sets a 20-year cookie and `find_session_by_cookie` has no TTL check. Fix: use a session-lifetime cookie (drop `permanent`), add server-side expiry check (e.g., `Session.where(created_at: 30.days.ago..)` in the lookup).
+
+- Files: `app/controllers/concerns/authentication.rb`, `app/models/session.rb`
+- Belongs in: PR1
+
+**Hardcoded "changeme" password in migration.** The bcrypt hash is committed to version control. Fix: change the admin user password immediately after deploy. For future seed data, use a rake task that reads from credentials or prompts for input.
+
+- File: `db/migrate/20260414161031_add_user_id_to_credit_card_transactions.rb`
+- Belongs in: PR2 (or manual post-deploy step)
+
+### MEDIUM
+
+**No minimum password length.** Users can register with a 1-character password. Fix: add `validates :password, length: { minimum: 8 }, if: -> { password.present? }` to User model.
+
+- File: `app/models/user.rb`
+- Belongs in: PR1
+
+**No rate limiting on registration.** `SessionsController` has rate limiting but `RegistrationsController` does not. Fix: add `rate_limit to: 5, within: 10.minutes, only: :create`.
+
+- File: `app/controllers/registrations_controller.rb`
+- Belongs in: PR1
+
+**GraphQL introspection enabled in production.** Full schema discoverable. Fix: add `disable_introspection_entry_points if Rails.env.production?` to schema.
+
+- File: `app/graphql/banking_schema.rb`
+- Belongs in: PR2
+
+**No GraphQL depth/complexity limits.** DoS vector. Fix: add `max_depth 10` and `max_complexity 200` to schema.
+
+- File: `app/graphql/banking_schema.rb`
+- Belongs in: PR2
+
+**Passwords route overly broad.** `resources :passwords` creates 7 routes, only `update` is implemented. Fix: restrict to `resource :password, only: [:update], param: :token`.
+
+- File: `config/routes.rb`
+- Belongs in: PR1
+
+**Flinks `triggerFlinksImport` must be scoped** to the current user's connections, not all active connections.
+
+- Belongs in: PR5
+
+### LOW
+
+**Unused `token` column on sessions.** `find_session_by_cookie` looks up by `id` via signed cookie, not by `token`. Remove the column or repurpose it.
+
+- File: `app/models/session.rb`, `db/migrate/*_create_sessions.rb`
+- Belongs in: PR1
+
+**`config.hosts` not configured in production.** Add `config.hosts = ["budgetr.nurey.com"]` for defense-in-depth.
+
+- File: `config/environments/production.rb`
+- Belongs in: PR1
+
+**GraphQL `RecordNotFound` handling.** `find_by!` in mutations may produce raw exception messages instead of clean GraphQL errors. Verify and add `rescue_from` if needed.
+
+- Files: `app/graphql/mutations/create_note.rb`, `app/graphql/mutations/update_credit_card_transaction.rb`
+- Belongs in: PR2
+
+---
+
 ## Verification
 
-1. **Auth:** Register user via curl, login, use session token to query GraphQL — verify scoped results
-2. **Isolation:** Create two users, import transactions for each, verify they only see their own
-3. **Backfill:** Run admin rake task, verify all existing transactions have `user_id`
-4. **Dedup:** Run Flinks import twice, verify no duplicate transactions
-5. **Recurring:** Check Solid Queue logs for scheduled 6am runs
-6. **Frontend:** Login flow, Flinks Connect widget, transaction list loads, import status shows
+1. **Auth:** Register user via curl, login, verify session cookie is set, `GET /session` returns user
+2. **CSRF:** Verify that a cross-origin POST without matching Origin header is rejected
+3. **Session expiry:** Verify that expired sessions return 401
+4. **Isolation:** Create two users, import transactions for each, verify they only see their own
+5. **Backfill:** Run admin rake task, verify all existing transactions have `user_id`
+6. **Dedup:** Run Flinks import twice, verify no duplicate transactions
+7. **Recurring:** Check Solid Queue logs for scheduled 6am runs
+8. **Frontend:** Login flow, Flinks Connect widget, transaction list loads, import status shows

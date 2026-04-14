@@ -1,6 +1,4 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-<% password_digest = BCrypt::Password.create("password") %>
+<% password_digest = BCrypt::Password.create("password123") %>
 
 # == Schema Information
 #
@@ -16,10 +14,10 @@
 #
 #  index_users_on_email_address  (email_address) UNIQUE
 #
-one:
-  email_address: one@example.com
+alice:
+  email_address: "alice@example.com"
   password_digest: <%= password_digest %>
 
-two:
-  email_address: two@example.com
+bob:
+  email_address: "bob@example.com"
   password_digest: <%= password_digest %>
