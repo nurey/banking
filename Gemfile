@@ -45,3 +45,5 @@ group :development do
   gem 'rbs', '~> 4.0', require: false
   gem 'web-console'
 end
+
+gem "bcrypt", "~> 3.1"
