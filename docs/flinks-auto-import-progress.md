@@ -7,9 +7,9 @@ main
  └─ PR1: feat/user-auth-backend        ✅ done
      └─ PR2: feat/transaction-isolation ✅ done
          └─ PR3: feat/auth-frontend     ✅ done (banking-react-apollo repo)
-             └─ PR4: feat/flinks-connection         ⬜ not started
-                 └─ PR5: feat/flinks-import-pipeline ⬜ not started
-                     └─ PR6: feat/flinks-frontend    ⬜ not started
+             └─ PR4: feat/flinks-connection         ✅ done
+                 └─ PR5: feat/flinks-import-pipeline ✅ done
+                     └─ PR6: feat/flinks-frontend    ✅ done
 ```
 
 ## PR1: User auth backend — `feat/user-auth-backend`
@@ -66,21 +66,24 @@ main
 - [ ] `FlinksConnect` frontend component (deferred to PR6)
 
 ## PR5: Flinks import pipeline — `feat/flinks-import-pipeline`
-**Repo:** banking | **Status:** not started
+**Repo:** banking | **Status:** complete | **Tests:** 62 pass (cumulative)
 
-- [ ] `Flinks::TransactionImporter` service
-- [ ] `FlinksImportJob` (Solid Queue recurring)
-- [ ] `config/recurring.yml` — daily 6am ET
-- [ ] Enable Solid Queue (uncomment `active_job/railtie`, add gem, configure)
-- [ ] GraphQL: `flinksImportStatus` query, `triggerFlinksImport` mutation (scoped to current user)
-- [ ] Specs (VCR + real DB)
+- [x] `Flinks::TransactionImporter` — fetches, transforms to cents, inserts with dedup
+- [x] `FlinksImportJob` — iterates active connections, rescues per-connection errors
+- [x] `config/recurring.yml` — daily 6am ET
+- [x] Enable Active Job + Solid Queue (gem, config, queue schema)
+- [x] Importer specs (8): create, debit/credit cents, user_id, card_number, counts, dedup, last_synced_at
+- [x] Job specs (2): active connections imported, inactive skipped
+- [ ] GraphQL: `flinksImportStatus` query, `triggerFlinksImport` mutation (deferred to PR6)
 
 ## PR6: Flinks frontend — `feat/flinks-frontend`
-**Repo:** banking-react-apollo | **Status:** not started
+**Repo:** banking-react-apollo | **Status:** complete | **Tests:** 13 pass (cumulative)
 
-- [ ] `ImportStatus` component (last sync, "Sync Now" button)
-- [ ] Connection management UI (list, disconnect)
-- [ ] Integration into dashboard
+- [x] `ImportStatus` component — shows connected accounts, status, last sync time, "Sync Now" button
+- [x] `triggerFlinksImport` mutation integration with error/success feedback
+- [x] `flinksConnections` query for listing connections
+- [x] Integrated into dashboard above SummaryHeader
+- [x] 3 component tests (connection display, empty state, sync button)
 
 ## Security Audit Fixes
 
@@ -94,7 +97,7 @@ main
 | GraphQL introspection in prod | MEDIUM | ✅ fixed | PR2 |
 | GraphQL depth/complexity limits | MEDIUM | ✅ fixed | PR2 |
 | Passwords route overly broad | MEDIUM | deferred | PR1 |
-| Flinks import scoped to user | MEDIUM | ⬜ todo | PR5 |
+| Flinks import scoped to user | MEDIUM | ✅ fixed | PR5/PR6 |
 | Unused token column on sessions | LOW | ⬜ todo | PR1 |
 | config.hosts not configured | LOW | ⬜ todo | PR1 |
 | GraphQL RecordNotFound handling | LOW | ⬜ todo | PR2 |

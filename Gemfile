@@ -31,6 +31,7 @@ gem 'rack-cors'
 
 gem 'graphql'
 gem 'graphql-batch'
+gem 'solid_queue'
 
 group :development, :test do
   gem 'brakeman', require: false

@@ -25,5 +25,13 @@ module Types
       Note.joins(:credit_card_transaction)
           .where(credit_card_transactions: { user_id: context[:current_user].id })
     end
+
+    field :flinks_connections, [Types::FlinksConnectionType], null: false,
+      connection: false,
+      description: 'Returns the current user\'s Flinks connections'
+
+    def flinks_connections
+      context[:current_user].flinks_connections
+    end
   end
 end
