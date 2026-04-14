@@ -3,7 +3,13 @@
 require "rails_helper"
 
 RSpec.describe "updateCreditCardTransaction mutation" do
-  fixtures :credit_card_transactions, :notes
+  fixtures :users, :credit_card_transactions, :notes
+
+  let(:current_user) { users(:alice) }
+
+  def execute_graphql(query, variables: {})
+    super(query, variables: variables, context: { current_user: current_user })
+  end
 
   let(:mutation) do
     <<~GQL

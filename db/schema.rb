@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_14_160042) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_161031) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -22,8 +22,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_160042) do
     t.text "details"
     t.date "tx_date"
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.index ["tx_date", "details", "credit"], name: "credit_card_transactions_credits_unique_key", unique: true, where: "(debit IS NULL)"
-    t.index ["tx_date", "details", "debit"], name: "credit_card_transactions_debits_unique_key", unique: true, where: "(credit IS NULL)"
+    t.bigint "user_id", null: false
+    t.index ["user_id", "tx_date", "details", "credit"], name: "credit_card_transactions_credits_unique_key", unique: true, where: "(debit IS NULL)"
+    t.index ["user_id", "tx_date", "details", "debit"], name: "credit_card_transactions_debits_unique_key", unique: true, where: "(credit IS NULL)"
+    t.index ["user_id"], name: "index_credit_card_transactions_on_user_id"
   end
 
   create_table "credits_debits", force: :cascade do |t|
@@ -61,6 +63,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_160042) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "credit_card_transactions", "users"
   add_foreign_key "notes", "credit_card_transactions"
   add_foreign_key "sessions", "users"
 end

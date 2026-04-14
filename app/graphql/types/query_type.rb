@@ -11,7 +11,7 @@ module Types
     end
 
     def credit_card_transactions(**options)
-      scope = CreditCardTransaction.where(tx_date: 12.months.ago..).order(options[:sort])
+      scope = context[:current_user].credit_card_transactions.where(tx_date: 12.months.ago..).order(options[:sort])
       scope = scope.without_notes unless options[:show_annotated]
       scope = scope.debit unless options[:show_credits]
 
@@ -22,7 +22,8 @@ module Types
       description: 'Returns a list of notes'
 
     def notes
-      Note.all
+      Note.joins(:credit_card_transaction)
+          .where(credit_card_transactions: { user_id: context[:current_user].id })
     end
   end
 end
