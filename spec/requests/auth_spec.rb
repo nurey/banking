@@ -36,6 +36,16 @@ RSpec.describe "Auth endpoints", type: :request do
 
       expect(response).to have_http_status(:unprocessable_entity)
     end
+
+    it "returns 422 for password shorter than 8 characters" do
+      post "/registration",
+        params: { email_address: "short@example.com", password: "abc" },
+        headers: { "Origin" => allowed_origin }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body["errors"].join).to match(/too short/i)
+    end
   end
 
   describe "POST /session" do
