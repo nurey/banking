@@ -1,0 +1,83 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://toolbox-api.private.fin.ag/v3/<FLINKS_CUSTOMER_ID>/BankingServices/GenerateAuthorizeToken
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - toolbox-api.private.fin.ag
+      Content-Type:
+      - application/json
+      Flinks-Auth-Key:
+      - c4569c54-e167-4d34-8de6-f4113bc82414
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 14 Apr 2026 17:21:19 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '69'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Via:
+      - 1.1 google
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+    body:
+      encoding: UTF-8
+      string: '{"HttpStatusCode":200,"Token":"90f0be55-f21f-4a89-b979-603d848b1b5d"}'
+  recorded_at: Tue, 14 Apr 2026 17:21:19 GMT
+- request:
+    method: post
+    uri: https://toolbox-api.private.fin.ag/v3/<FLINKS_CUSTOMER_ID>/BankingServices/Authorize
+    body:
+      encoding: UTF-8
+      string: '{"Institution":"FlinksCapital","Username":"Greatday","Password":"Everyday","MostRecentCached":true,"Save":true}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - toolbox-api.private.fin.ag
+      Content-Type:
+      - application/json
+      Flinks-Auth-Key:
+      - 90f0be55-f21f-4a89-b979-603d848b1b5d
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 14 Apr 2026 17:21:21 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '529'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Via:
+      - 1.1 google
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+    body:
+      encoding: UTF-8
+      string: '{"HttpStatusCode":200,"Links":[{"rel":"AccountsDetail","href":"/GetAccountsDetail","example":null},{"rel":"AccountsSummary","href":"/GetAccountsSummary","example":null},{"rel":"Statements","href":"/GetStatements","example":null}],"InstitutionName":"FlinksCapital","Login":{"Username":"Greatday","IsScheduledRefresh":false,"LastRefresh":"2026-04-14T06:46:23.4081214","Type":"Personal","Id":"3e066c21-5e59-479c-296d-08de99621eaf"},"InstitutionId":14,"Institution":"FlinksCapital","RequestId":"426943f3-7639-4d3c-ba79-ea92911305da"}'
+  recorded_at: Tue, 14 Apr 2026 17:21:21 GMT
+recorded_with: VCR 6.4.0
