@@ -85,11 +85,11 @@ main
 | CSRF via Origin verification | CRITICAL | ✅ fixed | PR1 |
 | Sessions never expire | HIGH | ✅ fixed | PR1 |
 | Hardcoded "changeme" password | HIGH | ✅ fixed | PR2 |
-| No minimum password length | MEDIUM | ⬜ todo | PR1 |
-| No registration rate limiting | MEDIUM | ⬜ todo | PR1 |
-| GraphQL introspection in prod | MEDIUM | ⬜ todo | PR2 |
-| GraphQL depth/complexity limits | MEDIUM | ⬜ todo | PR2 |
-| Passwords route overly broad | MEDIUM | ⬜ todo | PR1 |
+| No minimum password length | MEDIUM | ✅ fixed | PR1 |
+| No registration rate limiting | MEDIUM | ✅ fixed | PR1 |
+| GraphQL introspection in prod | MEDIUM | ✅ fixed | PR2 |
+| GraphQL depth/complexity limits | MEDIUM | ✅ fixed | PR2 |
+| Passwords route overly broad | MEDIUM | deferred | PR1 |
 | Flinks import scoped to user | MEDIUM | ⬜ todo | PR5 |
 | Unused token column on sessions | LOW | ⬜ todo | PR1 |
 | config.hosts not configured | LOW | ⬜ todo | PR1 |
