@@ -7,8 +7,8 @@ main
  └─ PR1: feat/user-auth-backend        ✅ done
      └─ PR2: feat/transaction-isolation ✅ done
          └─ PR3: feat/auth-frontend     ✅ done (banking-react-apollo repo)
-             └─ PR4: feat/flinks-connection         ⬜ not started
-                 └─ PR5: feat/flinks-import-pipeline ⬜ not started
+             └─ PR4: feat/flinks-connection         ✅ done
+                 └─ PR5: feat/flinks-import-pipeline ✅ done
                      └─ PR6: feat/flinks-frontend    ⬜ not started
 ```
 
@@ -66,14 +66,15 @@ main
 - [ ] `FlinksConnect` frontend component (deferred to PR6)
 
 ## PR5: Flinks import pipeline — `feat/flinks-import-pipeline`
-**Repo:** banking | **Status:** not started
+**Repo:** banking | **Status:** complete | **Tests:** 62 pass (cumulative)
 
-- [ ] `Flinks::TransactionImporter` service
-- [ ] `FlinksImportJob` (Solid Queue recurring)
-- [ ] `config/recurring.yml` — daily 6am ET
-- [ ] Enable Solid Queue (uncomment `active_job/railtie`, add gem, configure)
-- [ ] GraphQL: `flinksImportStatus` query, `triggerFlinksImport` mutation (scoped to current user)
-- [ ] Specs (VCR + real DB)
+- [x] `Flinks::TransactionImporter` — fetches, transforms to cents, inserts with dedup
+- [x] `FlinksImportJob` — iterates active connections, rescues per-connection errors
+- [x] `config/recurring.yml` — daily 6am ET
+- [x] Enable Active Job + Solid Queue (gem, config, queue schema)
+- [x] Importer specs (8): create, debit/credit cents, user_id, card_number, counts, dedup, last_synced_at
+- [x] Job specs (2): active connections imported, inactive skipped
+- [ ] GraphQL: `flinksImportStatus` query, `triggerFlinksImport` mutation (deferred to PR6)
 
 ## PR6: Flinks frontend — `feat/flinks-frontend`
 **Repo:** banking-react-apollo | **Status:** not started
