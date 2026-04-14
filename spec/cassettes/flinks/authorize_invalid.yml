@@ -18,14 +18,14 @@ http_interactions:
       Content-Type:
       - application/json
       Flinks-Auth-Key:
-      - c4569c54-e167-4d34-8de6-f4113bc82414
+      - "<FLINKS_AUTH_KEY>"
   response:
     status:
       code: 200
       message: OK
     headers:
       Date:
-      - Tue, 14 Apr 2026 17:23:31 GMT
+      - Tue, 14 Apr 2026 18:02:38 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -35,17 +35,17 @@ http_interactions:
       Via:
       - 1.1 google
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      - h3=":443"; ma=2592000
     body:
       encoding: UTF-8
-      string: '{"HttpStatusCode":200,"Token":"12324005-aeda-49b0-b7c5-14e8856788a6"}'
-  recorded_at: Tue, 14 Apr 2026 17:23:31 GMT
+      string: '{"HttpStatusCode":200,"Token":"8da9a085-7d1d-4d46-b8f2-6cc78383ba29"}'
+  recorded_at: Tue, 14 Apr 2026 18:02:38 GMT
 - request:
     method: post
     uri: https://toolbox-api.private.fin.ag/v3/<FLINKS_CUSTOMER_ID>/BankingServices/Authorize
     body:
       encoding: UTF-8
-      string: '{"Institution":"FlinksCapital","Username":"bad","Password":"bad","MostRecentCached":true,"Save":true}'
+      string: '{"Institution":"FlinksCapital","Username":"<FILTERED>","Password":"<FILTERED>","MostRecentCached":true,"Save":true}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -58,14 +58,14 @@ http_interactions:
       Content-Type:
       - application/json
       Flinks-Auth-Key:
-      - 12324005-aeda-49b0-b7c5-14e8856788a6
+      - 8da9a085-7d1d-4d46-b8f2-6cc78383ba29
   response:
     status:
       code: 500
       message: Internal Server Error
     headers:
       Date:
-      - Tue, 14 Apr 2026 17:23:39 GMT
+      - Tue, 14 Apr 2026 18:02:46 GMT
       Content-Type:
       - application/json
       Strict-Transport-Security:
@@ -73,11 +73,11 @@ http_interactions:
       Via:
       - 1.1 google
       Alt-Svc:
-      - h3=":443"; ma=2592000
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Transfer-Encoding:
       - chunked
     body:
       encoding: UTF-8
       string: '{"HttpStatusCode":500,"Accounts":null,"FlinksCode":"AGGREGATION_ERROR"}'
-  recorded_at: Tue, 14 Apr 2026 17:23:39 GMT
+  recorded_at: Tue, 14 Apr 2026 18:02:46 GMT
 recorded_with: VCR 6.4.0

@@ -18,14 +18,14 @@ http_interactions:
       Content-Type:
       - application/json
       Flinks-Auth-Key:
-      - c4569c54-e167-4d34-8de6-f4113bc82414
+      - "<FLINKS_AUTH_KEY>"
   response:
     status:
       code: 200
       message: OK
     headers:
       Date:
-      - Tue, 14 Apr 2026 17:21:19 GMT
+      - Tue, 14 Apr 2026 18:02:32 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -38,14 +38,14 @@ http_interactions:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
     body:
       encoding: UTF-8
-      string: '{"HttpStatusCode":200,"Token":"90f0be55-f21f-4a89-b979-603d848b1b5d"}'
-  recorded_at: Tue, 14 Apr 2026 17:21:19 GMT
+      string: '{"HttpStatusCode":200,"Token":"2942ca14-3790-4440-8b0c-ab30ae13afa0"}'
+  recorded_at: Tue, 14 Apr 2026 18:02:32 GMT
 - request:
     method: post
     uri: https://toolbox-api.private.fin.ag/v3/<FLINKS_CUSTOMER_ID>/BankingServices/Authorize
     body:
       encoding: UTF-8
-      string: '{"Institution":"FlinksCapital","Username":"Greatday","Password":"Everyday","MostRecentCached":true,"Save":true}'
+      string: '{"Institution":"FlinksCapital","Username":"<FILTERED>","Password":"<FILTERED>","MostRecentCached":true,"Save":true}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -58,14 +58,14 @@ http_interactions:
       Content-Type:
       - application/json
       Flinks-Auth-Key:
-      - 90f0be55-f21f-4a89-b979-603d848b1b5d
+      - 2942ca14-3790-4440-8b0c-ab30ae13afa0
   response:
     status:
       code: 200
       message: OK
     headers:
       Date:
-      - Tue, 14 Apr 2026 17:21:21 GMT
+      - Tue, 14 Apr 2026 18:02:34 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -78,6 +78,6 @@ http_interactions:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
     body:
       encoding: UTF-8
-      string: '{"HttpStatusCode":200,"Links":[{"rel":"AccountsDetail","href":"/GetAccountsDetail","example":null},{"rel":"AccountsSummary","href":"/GetAccountsSummary","example":null},{"rel":"Statements","href":"/GetStatements","example":null}],"InstitutionName":"FlinksCapital","Login":{"Username":"Greatday","IsScheduledRefresh":false,"LastRefresh":"2026-04-14T06:46:23.4081214","Type":"Personal","Id":"3e066c21-5e59-479c-296d-08de99621eaf"},"InstitutionId":14,"Institution":"FlinksCapital","RequestId":"426943f3-7639-4d3c-ba79-ea92911305da"}'
-  recorded_at: Tue, 14 Apr 2026 17:21:21 GMT
+      string: '{"HttpStatusCode":200,"Links":[{"rel":"AccountsDetail","href":"/GetAccountsDetail","example":null},{"rel":"AccountsSummary","href":"/GetAccountsSummary","example":null},{"rel":"Statements","href":"/GetStatements","example":null}],"InstitutionName":"FlinksCapital","Login":{"Username":"<FILTERED>","IsScheduledRefresh":false,"LastRefresh":"2026-04-14T06:46:23.4081214","Type":"Personal","Id":"3e066c21-5e59-479c-296d-08de99621eaf"},"InstitutionId":14,"Institution":"FlinksCapital","RequestId":"4811fa41-e76f-48be-8702-f9a9578b18d1"}'
+  recorded_at: Tue, 14 Apr 2026 18:02:34 GMT
 recorded_with: VCR 6.4.0

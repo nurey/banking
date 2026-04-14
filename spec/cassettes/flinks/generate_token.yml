@@ -18,14 +18,14 @@ http_interactions:
       Content-Type:
       - application/json
       Flinks-Auth-Key:
-      - c4569c54-e167-4d34-8de6-f4113bc82414
+      - "<FLINKS_AUTH_KEY>"
   response:
     status:
       code: 200
       message: OK
     headers:
       Date:
-      - Tue, 14 Apr 2026 17:21:19 GMT
+      - Tue, 14 Apr 2026 18:02:32 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -38,6 +38,6 @@ http_interactions:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
     body:
       encoding: UTF-8
-      string: '{"HttpStatusCode":200,"Token":"03a10b0d-22b7-4c7c-9b39-8a1631f5a72d"}'
-  recorded_at: Tue, 14 Apr 2026 17:21:19 GMT
+      string: '{"HttpStatusCode":200,"Token":"37562f37-9893-410b-a73a-2e9caecfb991"}'
+  recorded_at: Tue, 14 Apr 2026 18:02:32 GMT
 recorded_with: VCR 6.4.0

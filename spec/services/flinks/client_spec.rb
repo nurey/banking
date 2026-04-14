@@ -4,6 +4,7 @@ require "rails_helper"
 
 RSpec.describe Flinks::Client do
   let(:client) { described_class.new }
+  let(:creds) { Rails.application.credentials.flinks }
 
   describe "#generate_token", vcr: { cassette_name: "flinks/generate_token" } do
     it "returns a temporary authorize token" do
@@ -17,8 +18,8 @@ RSpec.describe Flinks::Client do
     it "returns a request_id and login info" do
       result = client.authorize(
         institution: "FlinksCapital",
-        username: "Greatday",
-        password: "Everyday"
+        username: creds.demo_username,
+        password: creds.demo_password
       )
       expect(result[:request_id]).to be_present
       expect(result[:login_id]).to be_present
@@ -28,11 +29,10 @@ RSpec.describe Flinks::Client do
 
   describe "#fetch_transactions", vcr: { cassette_name: "flinks/fetch_transactions" } do
     it "returns an array of transactions with expected fields" do
-      # Authorize first to get a valid request_id
       auth = client.authorize(
         institution: "FlinksCapital",
-        username: "Greatday",
-        password: "Everyday"
+        username: creds.demo_username,
+        password: creds.demo_password
       )
       transactions = client.fetch_transactions(request_id: auth[:request_id])
       expect(transactions).to be_an(Array)
