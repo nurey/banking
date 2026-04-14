@@ -51,15 +51,19 @@ main
 - [x] Vitest + @testing-library/react setup
 
 ## PR4: Flinks connection — `feat/flinks-connection`
-**Repo:** banking + banking-react-apollo | **Status:** not started
+**Repo:** banking | **Status:** complete | **Tests:** 52 pass (cumulative)
 
-- [ ] Migration: `flinks_connections` table with encrypted columns
-- [ ] `FlinksConnection` model with `encrypts :login_id, :request_id`
-- [ ] `Flinks::Client` HTTP wrapper (VCR cassettes for tests)
-- [ ] `Flinks::Errors` classes
-- [ ] GraphQL mutations: `createFlinksConnection`, `deleteFlinksConnection`
-- [ ] `FlinksConnect` frontend component (iframe widget)
-- [ ] Specs
+- [x] Migration: `flinks_connections` table with encrypted columns + unique (user_id, institution) index
+- [x] `FlinksConnection` model with `encrypts :login_id, :request_id`
+- [x] `Flinks::Client` HTTP wrapper with VCR cassettes recorded against toolbox demo API
+- [x] `Flinks::ApiError`, `AuthenticationError`, `RateLimitError` (Zeitwerk-compatible single-class files)
+- [x] GraphQL mutations: `createFlinksConnection`, `deleteFlinksConnection` (scoped to current user)
+- [x] VCR + WebMock setup (`spec/support/vcr.rb`)
+- [x] Active Record encryption keys in credentials
+- [x] Flinks toolbox demo credentials in credentials
+- [x] Client specs (4): generate_token, authorize, fetch_transactions, error handling
+- [x] Mutation specs (4): create, create duplicate rejection, delete own, can't delete other user's
+- [ ] `FlinksConnect` frontend component (deferred to PR6)
 
 ## PR5: Flinks import pipeline — `feat/flinks-import-pipeline`
 **Repo:** banking | **Status:** not started

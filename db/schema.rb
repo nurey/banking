@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_14_161031) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_171853) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,6 +36,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_161031) do
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["credit_id"], name: "index_credits_debits_on_credit_id", unique: true
     t.index ["debit_id"], name: "index_credits_debits_on_debit_id", unique: true
+  end
+
+  create_table "flinks_connections", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "institution", null: false
+    t.datetime "last_synced_at"
+    t.string "login_id", null: false
+    t.string "request_id"
+    t.string "status", default: "active", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "institution"], name: "index_flinks_connections_on_user_id_and_institution", unique: true
+    t.index ["user_id"], name: "index_flinks_connections_on_user_id"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -64,6 +77,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_161031) do
   end
 
   add_foreign_key "credit_card_transactions", "users"
+  add_foreign_key "flinks_connections", "users"
   add_foreign_key "notes", "credit_card_transactions"
   add_foreign_key "sessions", "users"
 end
