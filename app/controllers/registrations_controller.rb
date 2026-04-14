@@ -1,5 +1,6 @@
 class RegistrationsController < ApplicationController
   allow_unauthenticated_access only: :create
+  rate_limit to: 5, within: 10.minutes, only: :create, with: -> { render json: { error: "Try again later." }, status: :too_many_requests }
 
   def create
     user = User.new(params.permit(:email_address, :password))
