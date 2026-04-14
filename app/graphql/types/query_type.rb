@@ -27,6 +27,7 @@ module Types
     end
 
     field :flinks_connections, [Types::FlinksConnectionType], null: false,
+      connection: false,
       description: 'Returns the current user\'s Flinks connections'
 
     def flinks_connections
