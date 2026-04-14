@@ -8,7 +8,7 @@ RSpec.describe "REST transaction isolation", type: :request do
   def login_as(user)
     post "/session",
       params: { email_address: user.email_address, password: "password123" },
-      headers: { "Origin" => ENV["CORS_ORIGINS"] || "http://localhost:3000" }
+      headers: { "Origin" => ENV["CORS_ORIGINS"] || "http://localhost:3001" }
   end
 
   it "index returns only the current user's transactions" do
