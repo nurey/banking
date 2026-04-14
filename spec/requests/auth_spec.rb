@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Auth endpoints", type: :request do
-  let(:allowed_origin) { ENV["CORS_ORIGINS"] || "http://localhost:3000" }
+  let(:allowed_origin) { ENV["CORS_ORIGINS"] || "http://localhost:3001" }
 
   describe "POST /registration" do
     it "creates a user and sets a session cookie" do

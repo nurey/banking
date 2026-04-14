@@ -38,7 +38,7 @@ module Authentication
     def verify_origin
       return if request.get? || request.head? || request.options?
 
-      allowed = ENV["CORS_ORIGINS"] || "http://localhost:3000"
+      allowed = ENV["CORS_ORIGINS"] || "http://localhost:3001"
       origin = request.headers["Origin"]
 
       head :forbidden unless origin.present? && origin == allowed
