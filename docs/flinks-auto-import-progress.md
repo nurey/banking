@@ -9,7 +9,7 @@ main
          └─ PR3: feat/auth-frontend     ✅ done (banking-react-apollo repo)
              └─ PR4: feat/flinks-connection         ✅ done
                  └─ PR5: feat/flinks-import-pipeline ✅ done
-                     └─ PR6: feat/flinks-frontend    ⬜ not started
+                     └─ PR6: feat/flinks-frontend    ✅ done
 ```
 
 ## PR1: User auth backend — `feat/user-auth-backend`
@@ -77,11 +77,13 @@ main
 - [ ] GraphQL: `flinksImportStatus` query, `triggerFlinksImport` mutation (deferred to PR6)
 
 ## PR6: Flinks frontend — `feat/flinks-frontend`
-**Repo:** banking-react-apollo | **Status:** not started
+**Repo:** banking-react-apollo | **Status:** complete | **Tests:** 13 pass (cumulative)
 
-- [ ] `ImportStatus` component (last sync, "Sync Now" button)
-- [ ] Connection management UI (list, disconnect)
-- [ ] Integration into dashboard
+- [x] `ImportStatus` component — shows connected accounts, status, last sync time, "Sync Now" button
+- [x] `triggerFlinksImport` mutation integration with error/success feedback
+- [x] `flinksConnections` query for listing connections
+- [x] Integrated into dashboard above SummaryHeader
+- [x] 3 component tests (connection display, empty state, sync button)
 
 ## Security Audit Fixes
 
@@ -95,7 +97,7 @@ main
 | GraphQL introspection in prod | MEDIUM | ✅ fixed | PR2 |
 | GraphQL depth/complexity limits | MEDIUM | ✅ fixed | PR2 |
 | Passwords route overly broad | MEDIUM | deferred | PR1 |
-| Flinks import scoped to user | MEDIUM | ⬜ todo | PR5 |
+| Flinks import scoped to user | MEDIUM | ✅ fixed | PR5/PR6 |
 | Unused token column on sessions | LOW | ⬜ todo | PR1 |
 | config.hosts not configured | LOW | ⬜ todo | PR1 |
 | GraphQL RecordNotFound handling | LOW | ⬜ todo | PR2 |
