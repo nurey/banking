@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resource :session, only: %i[show create destroy]
+  resource :registration, only: :create
+  resources :passwords, param: :token
   get 'up' => 'rails/health#show', as: :rails_health_check
 
   post '/graphql', to: 'graphql#execute'

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bundle update:*)",
+      "Bash(bundle exec rspec:*)",
+      "Bash(gem search:*)",
+      "WebFetch(domain:flowbite-react.com)",
+      "Bash(rbs-inline:*)",
+      "WebSearch",
+      "Bash(bundle exec:*)",
+      "Bash(gem list:*)",
+      "Bash(head -5 /Users/ilia/Devel/cibc-visa-import/data/*.csv)"
+    ]
+  }
+}
