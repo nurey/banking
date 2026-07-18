@@ -70,6 +70,11 @@ COPY --chown=rails:rails --from=build /rails /rails
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
+# Docker-level container healthcheck (visible in `docker ps` / `docker inspect`).
+# Independent of Kamal's deploy-time proxy check; probes the same /up endpoint.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:3000/up || exit 1
+
 # Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 3000
 CMD ["./bin/thrust", "./bin/rails", "server"]

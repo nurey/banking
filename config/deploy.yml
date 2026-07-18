@@ -58,11 +58,13 @@ proxy:
   ssl: false
   app_port: 3000
 
-
-# Configure a custom healthcheck (default is /up on port 3000)
-# healthcheck:
-#   path: /healthz
-#   port: 4000
+  # Healthcheck the proxy runs against the app on each deploy before cutting
+  # traffic over. Defaults to hitting /up every 1s with a 5s per-request
+  # timeout. /up is Rails' built-in rails/health#show endpoint.
+  healthcheck:
+    path: /up
+    interval: 1
+    timeout: 5
 
 # Bridge fingerprinted assets, like JS and CSS, between versions to avoid
 # hitting 404 on in-flight requests. Combines all files from new and old
