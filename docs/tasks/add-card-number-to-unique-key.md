@@ -1,6 +1,7 @@
 # Task: Add `card_number` to the transaction dedup unique key
 
-**Status:** Not started — investigated and recommended, not yet implemented.
+**Status:** Done — implemented 2026-07-21 in migration
+`20260721163836_add_card_number_to_credit_card_transaction_unique_keys.rb`.
 **Priority:** Low (correctness insurance; no active bug — see evidence).
 **Created:** 2026-07-21
 **Owning app:** this repo (`~/Devel/banking`). Imports are performed by the
