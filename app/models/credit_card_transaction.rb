@@ -65,6 +65,6 @@ end
 #
 # Indexes
 #
-#  credit_card_transactions_credits_unique_key  (tx_date,details,credit) UNIQUE WHERE (debit IS NULL)
-#  credit_card_transactions_debits_unique_key   (tx_date,details,debit) UNIQUE WHERE (credit IS NULL)
+#  credit_card_transactions_credits_unique_key  (tx_date,details,credit,card_number) UNIQUE WHERE (debit IS NULL)
+#  credit_card_transactions_debits_unique_key   (tx_date,details,debit,card_number) UNIQUE WHERE (credit IS NULL)
 #
