@@ -4,9 +4,9 @@
 `20260721163836_add_card_number_to_credit_card_transaction_unique_keys.rb`.
 **Priority:** Low (correctness insurance; no active bug — see evidence).
 **Created:** 2026-07-21
-**Owning app:** this repo (`~/Devel/banking`). Imports are performed by the
-separate `cibc-visa-import` tooling repo, which loads into this app's
-`credit_card_transactions` table via `ON CONFLICT DO NOTHING`.
+**Owning app:** this repo. Imports are performed by a separate import-tooling
+repo, which loads into this app's `credit_card_transactions` table via
+`ON CONFLICT DO NOTHING`.
 
 ## Goal
 
@@ -29,10 +29,10 @@ at the same station/price on the same day).
 
 ## Why this is safe (evidence gathered 2026-07-21)
 
-- **Cross-card collisions in history: 0** — across ~9,770 source rows / 6,768
-  distinct keys (CIBC Visa + CIBC Costco Mastercard + Rogers). The change alters
-  *no* existing behavior; it only closes a future hole.
-- **`card_number` is always populated** — 0 null/blank across 6,815 live rows.
+- **Cross-card collisions in history: 0** — across the full source history /
+  distinct keys spanning several cards. The change alters *no* existing
+  behavior; it only closes a future hole.
+- **`card_number` is always populated** — 0 null/blank across all live rows.
 - **Masked numbers are stable** — every last-4 maps 1:1 to a single mask, so
   adding `card_number` does **not** break re-import dedup (which depends on the
   mask being byte-identical across exports — it is).
@@ -45,8 +45,8 @@ at the same station/price on the same day).
 Follow the existing convention in
 `db/migrate/20260322222234_convert_debit_credit_to_integer_cents.rb`, which
 swaps these same two indexes inline (plain `remove_index`/`add_index`, no
-`algorithm: :concurrently` — the table is small, ~6.8k rows, so a brief lock is
-fine and matches repo style). Keep the **same index names**.
+`algorithm: :concurrently` — the table is small, so a brief lock is fine and
+matches repo style). Keep the **same index names**.
 
 ```ruby
 class AddCardNumberToCreditCardTransactionUniqueKeys < ActiveRecord::Migration[8.1]
@@ -82,21 +82,20 @@ Generate with `bin/rails g migration AddCardNumberToCreditCardTransactionUniqueK
 
 ## No change needed in the import tooling
 
-`cibc-visa-import`'s `import.sql` / `import_rogers.sql` use
-`ON CONFLICT DO NOTHING` with **no explicit conflict target**, so they catch
-whichever unique index applies and keep working unchanged after the key widens.
+The import tooling's `import*.sql` scripts use `ON CONFLICT DO NOTHING` with
+**no explicit conflict target**, so they catch whichever unique index applies
+and keep working unchanged after the key widens.
 
 ## Verification
 
 1. `bin/rails db:migrate`; confirm `db/schema.rb` shows both indexes now
    include `card_number`.
-2. In `cibc-visa-import`, re-run an already-imported file
-   (`make costco CSV_SUFFIX=20260721`) → expect `INSERT 0 0`, proving re-import
-   dedup still holds under the wider key.
+2. In the import tooling, re-run an already-imported file → expect `INSERT 0 0`,
+   proving re-import dedup still holds under the wider key.
 3. Migration itself changes no rows: `credit_card_transactions` count unchanged.
 
 ## Decision note
 
 Recommended as cheap insurance — downside is effectively nil for this data — but
 it fixes no observed problem. Deferring is defensible given a spotless
-9,770-row track record.
+collision-free import history.
