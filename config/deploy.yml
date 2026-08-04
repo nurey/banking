@@ -66,6 +66,19 @@ proxy:
     interval: 1
     timeout: 5
 
+  # Bind the published proxy ports to the LAN IP only, not 0.0.0.0.
+  #
+  # tailscaled holds :443 on this host's Tailscale IPs (`tailscale serve`
+  # fronting 127.0.0.1:19999). A wildcard 0.0.0.0:443 bind collides with it,
+  # and Docker aborts the *entire* network setup on a port-allocation failure:
+  # kamal-proxy then runs with no network attachment, so it loses the embedded
+  # DNS resolver at 127.0.0.11 and can't resolve container names. Every deploy
+  # healthcheck fails with "network is unreachable" until the 30s timeout, and
+  # the new container gets rolled back.
+  run:
+    bind_ips:
+      - 10.0.0.218
+
 # Bridge fingerprinted assets, like JS and CSS, between versions to avoid
 # hitting 404 on in-flight requests. Combines all files from new and old
 # version inside the asset_path.
