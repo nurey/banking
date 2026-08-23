@@ -43,6 +43,20 @@ class CreditCardTransaction < ApplicationRecord
     debit.nil? && credit.present?
   end
 
+  # Card numbers arrive from the bank export in a handful of shapes: a masked
+  # PAN ("5268********0298", "************8525"), an unmasked PAN, or just the
+  # last four digits ("1234"). They are stored verbatim because the raw value
+  # participates in the dedup unique indexes, so normalize on read. Returning
+  # only the last four means no readable PAN can leave the API.
+  #
+  # @rbs return: String?
+  def card_last_four
+    digits = card_number.to_s.gsub(/\D/, "")
+    return nil if digits.blank?
+
+    digits.last(4)
+  end
+
   # @rbs return: String
   def to_s
     formatted = amount ? format('$%.2f', amount / 100.0) : '$0.00'

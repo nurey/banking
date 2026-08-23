@@ -6,11 +6,16 @@ module Types
     field :details, String, null: true
     field :debit, Integer, null: true
     field :credit, Integer, null: true
-    field :card_number, String, null: true
+    field :card_number, String, null: true,
+      description: 'The last four digits of the card used (e.g. "0298")'
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     field :note, Types::NoteType, null: true,
       description: "This transaction's user-generated note"
+
+    def card_number
+      object.card_last_four
+    end
 
     def note
       Loaders::HasOneLoader.for(Note, :credit_card_transaction_id).load(object.id)

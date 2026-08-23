@@ -66,9 +66,19 @@ RSpec.describe "creditCardTransactions query" do
     expect(tx_data["details"]).to eq(tx.details)
     expect(tx_data["debit"]).to eq(tx.debit)
     expect(tx_data["credit"]).to be_nil
-    expect(tx_data["cardNumber"]).to eq(tx.card_number)
+    expect(tx_data["cardNumber"]).to eq(tx.card_last_four)
     expect(tx_data["createdAt"]).to be_present
     expect(tx_data["updatedAt"]).to be_present
+  end
+
+  it "returns only the last four digits as cardNumber" do
+    result = execute_graphql(query)
+    tx_data = result.dig("data", "creditCardTransactions").find do |t|
+      t["id"].to_i == credit_card_transactions(:recent_debit).id
+    end
+
+    expect(credit_card_transactions(:recent_debit).card_number).to eq("1234")
+    expect(tx_data["cardNumber"]).to eq("1234")
   end
 
   it "returns the associated note when present" do
