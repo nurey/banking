@@ -6,9 +6,11 @@
 #
 #  id          :bigint           not null, primary key
 #  card_number :text
+#  category    :text
 #  credit      :integer
 #  debit       :integer
 #  details     :text
+#  metadata    :jsonb            not null
 #  tx_date     :date
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null

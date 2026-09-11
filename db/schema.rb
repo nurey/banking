@@ -10,16 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_21_163836) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_27_122647) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "credit_card_transactions", force: :cascade do |t|
     t.text "card_number"
+    t.text "category"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.integer "credit"
     t.integer "debit"
     t.text "details"
+    t.jsonb "metadata", null: false
     t.date "tx_date"
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["tx_date", "details", "credit", "card_number"], name: "credit_card_transactions_credits_unique_key", unique: true, where: "(debit IS NULL)"
