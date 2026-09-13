@@ -8,9 +8,7 @@ image: nurey/budgetr
 servers:
   web:
     hosts:
-      - 168.235.69.227
-    options:
-      network: "private"
+      - 38.49.217.106
 
 # Credentials for your image host.
 registry:
@@ -24,7 +22,7 @@ registry:
 
 env:
   clear:
-    DB_HOST: 168.235.69.227
+    DB_HOST: budgetr-db
     POSTGRES_USER: budgetr_app
     POSTGRES_DB: banking_production
     CORS_ORIGINS: https://budgetr-app.nurey.com
@@ -46,24 +44,23 @@ builder:
 # Use accessory services (secrets come from .env).
 accessories:
   db:
-    image: postgres:16
-    host: 168.235.69.227
-    port: 5432
+    image: postgres:18
+    host: 38.49.217.106
     env:
       clear:
         POSTGRES_USER: 'budgetr_app'
         POSTGRES_DB: 'banking_production'
       secret:
         - POSTGRES_PASSWORD
-    files:
-      - config/init.sql:/docker-entrypoint-initdb.d/setup.sql
     directories:
-      - data:/var/lib/postgresql/data
-    options:
-      network: "private"
+      - data:/var/lib/postgresql
 
 # Configure Kamal Proxy
 proxy:
   ssl: true
   host: budgetr.nurey.com
   app_port: 3000
+  # Base deploy.yml pins bind_ips to the optiplex LAN IP (tailscaled workaround);
+  # the production host has no such conflict, so bind on all interfaces.
+  run:
+    bind_ips: ["0.0.0.0"]
