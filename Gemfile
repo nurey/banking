@@ -22,8 +22,6 @@ gem 'puma', '~> 8.0'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
-gem 'kamal', require: false
-
 gem 'thruster', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
@@ -41,6 +39,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'kamal', require: false
   gem 'annotaterb', '~> 4.20.0'
   gem 'rbs', '~> 4.0', require: false
   gem 'web-console'
