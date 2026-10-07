@@ -117,14 +117,14 @@ RSpec.describe "creditCardTransactions query" do
   end
 
   it "sorts by txDateAsc" do
-    result = execute_graphql(query, variables: { "sort" => ["txDateAsc"] })
+    result = execute_graphql(query, variables: { "sort" => [ "txDateAsc" ] })
     dates = result.dig("data", "creditCardTransactions").map { |t| t["txDate"] }
 
     expect(dates).to eq(dates.sort)
   end
 
   it "sorts by txDateDesc" do
-    result = execute_graphql(query, variables: { "sort" => ["txDateDesc"] })
+    result = execute_graphql(query, variables: { "sort" => [ "txDateDesc" ] })
     dates = result.dig("data", "creditCardTransactions").map { |t| t["txDate"] }
 
     expect(dates).to eq(dates.sort.reverse)

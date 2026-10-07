@@ -6,7 +6,7 @@ module Mutations
     argument :credit_card_transaction_id, ID, required: true
 
     field :note, Types::NoteType, null: true
-    field :errors, [String], null: false
+    field :errors, [ String ], null: false
 
     def resolve(detail:, credit_card_transaction_id:)
       Note.upsert(
@@ -24,7 +24,7 @@ module Mutations
       else
         {
           note: nil,
-          errors: 'Something went wrong'
+          errors: "Something went wrong"
         }
       end
     end

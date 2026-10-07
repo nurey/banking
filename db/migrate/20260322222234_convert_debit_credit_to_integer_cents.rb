@@ -12,10 +12,10 @@ class ConvertDebitCreditToIntegerCents < ActiveRecord::Migration[8.1]
     change_column :credit_card_transactions, :debit, :integer
     change_column :credit_card_transactions, :credit, :integer
 
-    add_index :credit_card_transactions, [:tx_date, :details, :debit],
+    add_index :credit_card_transactions, [ :tx_date, :details, :debit ],
       unique: true, where: "credit IS NULL",
       name: "credit_card_transactions_debits_unique_key"
-    add_index :credit_card_transactions, [:tx_date, :details, :credit],
+    add_index :credit_card_transactions, [ :tx_date, :details, :credit ],
       unique: true, where: "debit IS NULL",
       name: "credit_card_transactions_credits_unique_key"
   end
@@ -33,10 +33,10 @@ class ConvertDebitCreditToIntegerCents < ActiveRecord::Migration[8.1]
           credit = credit / 100.0
     SQL
 
-    add_index :credit_card_transactions, [:tx_date, :details, :debit],
+    add_index :credit_card_transactions, [ :tx_date, :details, :debit ],
       unique: true, where: "credit IS NULL",
       name: "credit_card_transactions_debits_unique_key"
-    add_index :credit_card_transactions, [:tx_date, :details, :credit],
+    add_index :credit_card_transactions, [ :tx_date, :details, :credit ],
       unique: true, where: "debit IS NULL",
       name: "credit_card_transactions_credits_unique_key"
   end

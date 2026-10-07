@@ -59,7 +59,7 @@ class CreditCardTransaction < ApplicationRecord
 
   # @rbs return: String
   def to_s
-    formatted = amount ? format('$%.2f', amount / 100.0) : '$0.00'
+    formatted = amount ? format("$%.2f", amount / 100.0) : "$0.00"
     "#{id}-#{tx_date}-#{formatted}-#{details}"
   end
 end

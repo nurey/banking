@@ -1,8 +1,8 @@
 namespace :debit_specific_credits do
-  desc 'Create debit-specific credits'
+  desc "Create debit-specific credits"
   task create: :environment do
     list = DoublyLinkedList.new
-    CreditCardTransaction.without_credit.where('tx_date >= ?', '2020-01-01').order(id: :desc).each do |tx|
+    CreditCardTransaction.without_credit.where("tx_date >= ?", "2020-01-01").order(id: :desc).each do |tx|
       list.push(tx)
     end
 
@@ -74,7 +74,7 @@ class DoublyLinkedList
   def find_near(node)
     # Check previous nodes (in the future relative to current node)
     curr_node = node.prev
-    while(curr_node)
+    while curr_node
       return curr_node if yield(curr_node)
       curr_node = curr_node.prev
     end
@@ -82,7 +82,7 @@ class DoublyLinkedList
     # Check next nodes up to 10 nodes ahead (in the past relative to current node)
     curr_node = node.next
     count = 1
-    while(curr_node && count < 10)
+    while curr_node && count < 10
       return curr_node if yield(curr_node)
       curr_node = curr_node.next
       count += 1
@@ -101,7 +101,7 @@ class DoublyLinkedList
 
   def _each
     curr_node = @head
-    while (curr_node)
+    while curr_node
       yield curr_node
       curr_node = curr_node.next
     end

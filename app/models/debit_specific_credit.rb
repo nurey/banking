@@ -2,10 +2,10 @@
 # frozen_string_literal: true
 
 class DebitSpecificCredit < ApplicationRecord
-  self.table_name = 'credits_debits'
+  self.table_name = "credits_debits"
 
-  belongs_to :credit, class_name: 'CreditCardTransaction'
-  belongs_to :debit, class_name: 'CreditCardTransaction'
+  belongs_to :credit, class_name: "CreditCardTransaction"
+  belongs_to :debit, class_name: "CreditCardTransaction"
 end
 
 # == Schema Information
