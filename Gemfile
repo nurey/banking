@@ -1,8 +1,6 @@
 source "https://rubygems.org", cooldown: 7
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby ">= 3.0.2"
-
 gem "jsonapi-serializer"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
