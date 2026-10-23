@@ -37,7 +37,12 @@ RUN apt-get update -qq && \
 # Install application gems
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle install && \
+# Install into a BuildKit cache mount so lockfile changes only rebuild changed gems,
+# then copy the result into the image (cache mounts are not part of the layer).
+RUN --mount=type=cache,id=budgetr-bundle,sharing=locked,target=/bundle-cache \
+    BUNDLE_PATH=/bundle-cache bundle install && \
+    BUNDLE_PATH=/bundle-cache bundle clean && \
+    cp -a /bundle-cache/. "${BUNDLE_PATH}"/ && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
