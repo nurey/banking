@@ -40,5 +40,4 @@ group :development do
   gem "kamal", require: false
   gem "annotaterb", "~> 4.20.0"
   gem "rbs", "~> 4.0", require: false
-  gem "web-console"
 end
