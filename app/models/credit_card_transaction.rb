@@ -23,11 +23,6 @@ class CreditCardTransaction < ApplicationRecord
     left_outer_joins(:debit_specific_credit).where(credits_debits: { debit_id: nil })
   end
 
-  # @rbs return: ActiveRecord::Relation[CreditCardTransaction]
-  def self.with_credit
-    joins(:debit_specific_credit)
-  end
-
   # @rbs return: Integer?
   def amount
     debit || credit
