@@ -5,6 +5,8 @@ class ReceiptLineItem < ApplicationRecord
   belongs_to :receipt
 
   validates :line_total, presence: true
+  validates :line_total, :unit_price, numericality: { only_integer: true, in: ReceiptParser::Money::RANGE }, allow_nil: true
+  validates :qty, numericality: { greater_than: -10**7, less_than: 10**7 }, allow_nil: true # decimal(10, 3)
   validates :description, exclusion: { in: [ nil ], message: "can't be missing" }
 
   # @rbs return: Hash[Symbol, untyped]

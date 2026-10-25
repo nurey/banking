@@ -22,7 +22,7 @@ module ReceiptParser::Steps
     PAYMENT_CARD = /(?:\*+|X{2,}|\#+)\s*(\d{4})(?!\d)/i
     RATE = /(?<!\d)(\d{1,2}(?:[.,]\d{1,3})?)\s*%/
     # `2 @ 3.99`, `2 x 3.99`, `1.234 kg @ $0.79/kg`
-    QUANTITY = /(?<![\d.,])(?<qty>\d+(?:[.,]\d+)?)\s*(?:kg|lbs?)?\s*[@xX×]\s*\$?(?<unit>\d+[.,]\d{2})(?!\d)/
+    QUANTITY = /(?<![\d.,])(?<qty>\d+(?:[.,]\d+)?)\s*(?:kg|lbs?)?\s*[@xX×]\s*\$?(?<unit>\d+[.,]\d{2})(?!\d)/i
     # `3/$5.00`: three for $5.00
     MULTI_BUY = /(?<![\d.,])(?<count>\d+)\s*\/\s*\$?(?<price>\d+[.,]\d{2})(?!\d)/
 

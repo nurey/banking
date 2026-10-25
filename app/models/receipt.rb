@@ -22,7 +22,10 @@ class Receipt < ApplicationRecord
   enum :parse_status, %w[parsed needs_review confirmed failed].index_by(&:itself), validate: true
 
   validates :capture_id, presence: true, uniqueness: true
-  validates :raw_text, :ocr_lines, presence: true
+  # Empty when Vision found no text; the images are still worth keeping.
+  validates :raw_text, exclusion: { in: [ nil ], message: "can't be missing" }
+  validate { errors.add(:ocr_lines, "must be an array") unless ocr_lines.is_a?(Array) }
+  validates :subtotal, :tax, :total, numericality: { only_integer: true, in: ReceiptParser::Money::RANGE }, allow_nil: true
   validate :images_acceptable
   validate :thumbnail_acceptable
 
@@ -39,6 +42,14 @@ class Receipt < ApplicationRecord
   # @rbs return: Array[ActiveStorage::Attachment]
   def pages
     images_attachments.sort_by(&:id)
+  end
+
+  # Active Storage writes the files after the row commits, so a crash or a
+  # failed write in between leaves a receipt without them.
+  #
+  # @rbs return: bool
+  def files_stored?
+    [ *pages, *thumbnail_attachment ].all? { it.blob.service.exist?(it.blob.key) }
   end
 
   # Writes the parser's fields and items, keeps its untouched output in
@@ -69,6 +80,7 @@ class Receipt < ApplicationRecord
   # @rbs error: StandardError
   # @rbs return: void
   def record_parse_failure(error)
+    reload if persisted? # drops whatever a failed apply_parse assigned
     failed_step = error.step.name.demodulize if error.is_a?(ReceiptParser::StepError)
     update!(
       parse_status: "failed",

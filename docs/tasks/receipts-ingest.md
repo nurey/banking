@@ -37,12 +37,12 @@ capture, so it can be re-parsed when the parser improves.
 
 ## Deploy
 
-Nothing below has been done yet. In order:
+Steps 1 and 2 are done (2026-10-25). In order:
 
-1. **Token.** `openssl rand -hex 32`, stored in 1Password `Private/Budgetr` as `RECEIPTS_API_TOKEN`.
+1. **Token** (done). `openssl rand -hex 32`, stored in 1Password `Private/Budgetr` as `RECEIPTS_API_TOKEN`.
    `.kamal/secrets-common` now fetches that field for **every** destination, so `kamal deploy` (optiplex
    and production) fails until the field exists. Put the same token in the app's Settings.
-2. **Pre-flight checks on the optiplex database** (read-only):
+2. **Pre-flight checks on the optiplex database** (read-only; done: the three rows and two NULLs):
    ```sh
    PGOPTIONS='-c default_transaction_read_only=on' psql -h 10.0.0.218 -U ilia -d banking_production \
      -c "select version from schema_migrations where version like '20251212%';" \
@@ -53,7 +53,8 @@ Nothing below has been done yet. In order:
 3. **Homelab** (branch `receipts-serve` in `~/Devel/homelab`): creates `/var/lib/budgetr/storage`
    (`1000:1000`, `0750`), adds it to the nightly backup, and adds the `tailscale serve --https=8443`
    entry for `/api` only. Apply it **before** the deploy, or Docker creates the volume directory as
-   root and the container (uid 1000) can't write to it.
+   root and the container (uid 1000) can't write to it. Include the backup role, which renders the
+   nightly script: `ansible-playbook site.yml --limit optiplex_local --tags budgetr,backup`.
 4. **Deploy** this branch to optiplex: `kamal deploy`. The entrypoint's `db:prepare` runs the two new
    migrations. Production (`-d production`) can follow at any time: it gets the tables but no token,
    so its endpoint answers 401.

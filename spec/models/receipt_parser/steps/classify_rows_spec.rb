@@ -83,6 +83,12 @@ RSpec.describe ReceiptParser::Steps::ClassifyRows do
     expect(result[2].quantity).to eq(ReceiptParser::Quantity.new(qty: BigDecimal("1.234"), unit_price: 79))
   end
 
+  it "reads weight units in capitals, as most tills print them" do
+    result = classify("1.234 KG @ $0.79/KG", "BANANAS 0.97", "2.5 LB @ 1.99", "APPLES 4.98", "SUBTOTAL 5.95").classified
+    expect(result.map(&:kind)).to eq(%i[quantity item quantity item subtotal])
+    expect(result[0].quantity).to eq(ReceiptParser::Quantity.new(qty: BigDecimal("1.234"), unit_price: 79))
+  end
+
   it "records a quantity printed on the item's own row" do
     row = classify("COKE 2 x 3.99 7.98", "SUBTOTAL 7.98").classified.first
     expect(row.kind).to eq(:item)

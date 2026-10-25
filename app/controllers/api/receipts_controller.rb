@@ -39,7 +39,9 @@ module Api
       return render_errors("receipt must be a JSON object", status: :unprocessable_content) unless capture
 
       existing = Receipt.find_by(capture_id: capture["capture_id"])
-      return render json: existing.as_api_json, status: :ok if existing
+      return render json: existing.as_api_json, status: :ok if existing&.files_stored?
+
+      existing&.destroy! # its files were never written: store the capture again
 
       if (too_large = size_error(capture))
         return render_errors(too_large, status: :content_too_large)
@@ -61,7 +63,7 @@ module Api
 
       receipt = Receipt.new(**capture_attributes(capture), parse_status: "failed", images:)
       receipt.thumbnail = thumbnail if thumbnail
-      receipt.save!
+      store(receipt)
 
       parse(receipt)
       render json: receipt.as_api_json, status: :created
@@ -158,6 +160,21 @@ module Api
         ocr_lines: capture["ocr_lines"],
         metadata: capture.slice("ocr", "device")
       }
+    end
+
+    # Active Storage writes the files after the row commits. If that fails, the
+    # row goes too, so the app's retry stores the capture again instead of
+    # getting back a receipt whose images don't exist.
+    #
+    # @rbs receipt: Receipt
+    # @rbs return: void
+    def store(receipt)
+      receipt.save!
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+      raise
+    rescue StandardError
+      receipt.destroy if receipt.persisted?
+      raise
     end
 
     # Parsing never rejects the upload: on any error the receipt stays `failed`

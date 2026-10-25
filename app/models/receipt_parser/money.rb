@@ -4,9 +4,12 @@
 module ReceiptParser
   # Money tokens in OCR text: an optional `$`, a dot or comma decimal mark, an
   # optional thousands separator, and a leading or trailing minus (Costco prints
-  # discounts as `5.00-`). Percentages, weights with three decimals, and dotted
-  # dates don't count.
+  # discounts as `5.00-`). Percentages, weights with three decimals, dotted
+  # dates, and amounts too large for an integer column don't count.
   module Money
+    MAX_CENTS = 2**31 - 1
+    # What an integer cents column holds.
+    RANGE = -MAX_CENTS..MAX_CENTS
     PATTERN = /
       (?<![\d.,])
       (?<neg>-)?\$?
@@ -18,7 +21,7 @@ module ReceiptParser
     # @rbs text: String
     # @rbs return: Array[MatchData]
     def self.matches(text)
-      text.to_enum(:scan, PATTERN).map { Regexp.last_match }
+      text.to_enum(:scan, PATTERN).map { Regexp.last_match }.select { RANGE.cover?(cents(it)) }
     end
 
     # Every money token in the text, left to right, in cents.

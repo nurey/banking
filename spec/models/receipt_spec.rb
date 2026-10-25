@@ -26,9 +26,13 @@ RSpec.describe Receipt do
     end
 
     it "requires capture_id, raw_text and ocr_lines" do
-      receipt = build_receipt(capture_id: nil, raw_text: "", ocr_lines: [])
+      receipt = build_receipt(capture_id: nil, raw_text: nil, ocr_lines: nil)
       expect(receipt).not_to be_valid
       expect(receipt.errors.attribute_names).to include(:capture_id, :raw_text, :ocr_lines)
+    end
+
+    it "allows empty OCR, for a scan Vision found no text on" do
+      expect(build_receipt(raw_text: "", ocr_lines: [])).to be_valid
     end
 
     it "rejects a duplicate capture_id" do

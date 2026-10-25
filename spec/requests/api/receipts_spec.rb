@@ -120,7 +120,10 @@ RSpec.describe "/api/receipts" do
       receipt = create_receipt
       first_lookup = true
       allow(Receipt).to receive(:find_by).and_wrap_original do |original, *args, **kwargs|
-        first_lookup ? (first_lookup = false) && nil : original.call(*args, **kwargs)
+        next original.call(*args, **kwargs) unless first_lookup
+
+        first_lookup = false
+        nil
       end
 
       post_capture
@@ -132,7 +135,10 @@ RSpec.describe "/api/receipts" do
       receipt = create_receipt
       first_lookup = true
       allow(Receipt).to receive(:find_by).and_wrap_original do |original, *args, **kwargs|
-        first_lookup ? (first_lookup = false) && nil : original.call(*args, **kwargs)
+        next original.call(*args, **kwargs) unless first_lookup
+
+        first_lookup = false
+        nil
       end
       allow_any_instance_of(Receipt).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique)
 
@@ -196,6 +202,33 @@ RSpec.describe "/api/receipts" do
       post_capture
       expect(response).to have_http_status(:created)
       expect(json["parse_status"]).to eq("failed")
+    end
+
+    it "keeps nothing when storing the files fails, so the app's retry uploads again" do
+      allow(ActiveStorage::Blob.service).to receive(:upload).and_raise(Errno::EACCES)
+      expect { post_capture }.to raise_error(Errno::EACCES)
+      expect(Receipt.find_by(capture_id:)).to be_nil
+
+      allow(ActiveStorage::Blob.service).to receive(:upload).and_call_original
+      receipt = create_receipt
+      expect(receipt.pages.map { it.blob.service.exist?(it.blob.key) }).to eq([ true ])
+    end
+
+    it "stores the capture again when a repeat finds its files missing" do
+      receipt = create_receipt
+      ActiveStorage::Blob.service.delete(receipt.pages.first.blob.key)
+
+      post_capture
+      expect(response).to have_http_status(:created)
+      receipt = Receipt.find_by!(capture_id:)
+      expect(receipt.pages.map { it.blob.service.exist?(it.blob.key) }).to eq([ true ])
+    end
+
+    it "archives a scan Vision found no text on" do
+      post_capture(capture.merge("raw_text" => "", "ocr_lines" => []))
+      expect(response).to have_http_status(:created), response.body
+      expect(json["parse_status"]).to eq("needs_review").or eq("failed")
+      expect(json["images"].size).to eq(1)
     end
 
     it "filters the capture document out of the request log" do
@@ -458,6 +491,16 @@ RSpec.describe "/api/receipts" do
       patch_receipt({ "merchant" => "X", "items" => [ { "description" => "B" } ] })
       expect(response).to have_http_status(:unprocessable_content)
       expect(Receipt.find_by!(capture_id:)).to have_attributes(merchant: "Loblaws", line_items: have_attributes(size: 2))
+    end
+
+    it "returns 422 for amounts too large to store, changing nothing" do
+      create_receipt
+      patch_receipt({ "merchant" => "X", "total" => 2**31 })
+      expect(response).to have_http_status(:unprocessable_content)
+
+      patch_receipt({ "items" => [ { "description" => "B", "qty" => 1, "unit_price" => 2**31, "line_total" => 2**31 } ] })
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(Receipt.find_by!(capture_id:)).to have_attributes(merchant: "Loblaws", total: 843, line_items: have_attributes(size: 2))
     end
 
     it "takes a confirmed receipt back to review when saved as a draft" do

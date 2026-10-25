@@ -52,5 +52,15 @@ RSpec.describe "Receipt re-parsing" do
       expect(r.reparse!).to eq(:failed)
       expect(r.reload.parsed["failed_step"]).to eq("BuildRows")
     end
+
+    it "records the failure when the result itself can't be saved" do
+      r = receipt(parse_status: "parsed", parser_version: 0)
+      result = ReceiptParser.call(ocr_lines: r.ocr_lines, captured_at: r.captured_at)
+      allow(ReceiptParser).to receive(:call).and_return(result.with(total: 9_999_999_999))
+
+      expect(r.reparse!).to eq(:failed)
+      expect(r.reload).to have_attributes(parse_status: "failed", total: nil)
+      expect(r.parsed["error"]).to be_present
+    end
   end
 end
