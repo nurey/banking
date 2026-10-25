@@ -1,0 +1,29 @@
+{
+  "items" : [
+    {
+      "description" : "LAIT 2% 2L",
+      "line_total" : 549,
+      "qty" : 1,
+      "unit_price" : 549
+    },
+    {
+      "description" : "PAIN BAGUETTE",
+      "line_total" : 329,
+      "qty" : 1,
+      "unit_price" : 329
+    },
+    {
+      "description" : "FROMAGE OKA",
+      "line_total" : 1299,
+      "qty" : 1,
+      "unit_price" : 1299
+    }
+  ],
+  "merchant" : "Iga Extra",
+  "parse_status" : "parsed",
+  "purchased_at" : "2026-10-24T14:12:00-04:00",
+  "purchased_on" : "2026-10-24",
+  "subtotal" : 2177,
+  "tax" : 49,
+  "total" : 2226
+}

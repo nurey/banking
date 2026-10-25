@@ -105,4 +105,16 @@ RSpec.describe ReceiptParser::Steps::ClassifyRows do
     expect(classify("CARD # **** **** **** 4321").card_last_four).to eq("4321")
     expect(classify("TOTAL 8.43").card_last_four).to be_nil
   end
+
+  it "finds the last four when Vision collapses or splits the mask on a payment row" do
+    # Vision reads long runs of * or X as a few characters, sometimes split in two.
+    expect(classify("VISA ** **0298 20.29").card_last_four).to eq("0298")
+    expect(classify("VISA *0298 20.29").card_last_four).to eq("0298")
+    expect(classify("MC XXX> XXX1234 37.94").card_last_four).to eq("1234")
+  end
+
+  it "doesn't take a short mask off a payment row" do
+    expect(classify("ITEM *1234 5.00", "SUBTOTAL 5.00").card_last_four).to be_nil
+    expect(classify("AUTH 123456").card_last_four).to be_nil
+  end
 end

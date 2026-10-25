@@ -17,6 +17,9 @@ module ReceiptParser::Steps
     NOT_TOTAL = /\b(?:SAVINGS?|SAVED|DISCOUNTS?|ITEMS?|NUMBER|POINTS|ARTICLES?|[EÉ]CONOMIES?)\b/i
     PAYMENT = /\b(?:VISA|MASTERCARD|MC|AMEX|DEBIT|INTERAC|CASH|CHANGE|TENDER(?:ED)?|APPROVED|AUTH)\b/i
     CARD = /(?:\*{4,}|X{4,})\s*(\d{4})(?!\d)/i
+    # Vision collapses long runs of * or X ("**0298", "XXX1234"), so on a
+    # payment row a shorter mask counts too.
+    PAYMENT_CARD = /(?:\*+|X{2,}|\#+)\s*(\d{4})(?!\d)/i
     RATE = /(?<!\d)(\d{1,2}(?:[.,]\d{1,3})?)\s*%/
     # `2 @ 3.99`, `2 x 3.99`, `1.234 kg @ $0.79/kg`
     QUANTITY = /(?<![\d.,])(?<qty>\d+(?:[.,]\d+)?)\s*(?:kg|lbs?)?\s*[@xX×]\s*\$?(?<unit>\d+[.,]\d{2})(?!\d)/
@@ -45,7 +48,8 @@ module ReceiptParser::Steps
         ReceiptParser::ClassifiedRow.new(row:, kind:, rate:, quantity:)
       end
 
-      card_last_four = ctx.rows.lazy.filter_map { CARD.match(it.text)&.[](1) }.first
+      card_last_four = ctx.rows.lazy.filter_map { CARD.match(it.text)&.[](1) }.first ||
+        classified.lazy.select(&:payment?).filter_map { PAYMENT_CARD.match(it.text)&.[](1) }.first
       ctx.with(classified:, card_last_four:)
     end
 

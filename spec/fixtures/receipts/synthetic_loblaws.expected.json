@@ -1,0 +1,36 @@
+{
+  "card_last_four" : "0298",
+  "items" : [
+    {
+      "description" : "BANANAS",
+      "line_total" : 97,
+      "qty" : 1.234,
+      "unit_price" : 79
+    },
+    {
+      "description" : "PC MILK 2% 4L",
+      "line_total" : 649,
+      "qty" : 1,
+      "unit_price" : 649
+    },
+    {
+      "description" : "COKE ZERO 355ML",
+      "line_total" : 798,
+      "qty" : 2,
+      "unit_price" : 399
+    },
+    {
+      "description" : "SOURDOUGH LOAF",
+      "line_total" : 429,
+      "qty" : 1,
+      "unit_price" : 429
+    }
+  ],
+  "merchant" : "Loblaws",
+  "parse_status" : "parsed",
+  "purchased_at" : "2026-10-23T18:22:00-04:00",
+  "purchased_on" : "2026-10-23",
+  "subtotal" : 1973,
+  "tax" : 56,
+  "total" : 2029
+}

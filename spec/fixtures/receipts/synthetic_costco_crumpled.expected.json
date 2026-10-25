@@ -1,0 +1,36 @@
+{
+  "card_last_four" : "1234",
+  "items" : [
+    {
+      "description" : "KIRKLAND TOWELS",
+      "line_total" : 2399,
+      "qty" : 1,
+      "unit_price" : 2399
+    },
+    {
+      "description" : "ORGANIC EGGS 24CT",
+      "line_total" : 849,
+      "qty" : 1,
+      "unit_price" : 849
+    },
+    {
+      "description" : "TPD/1234567",
+      "line_total" : -500,
+      "qty" : 1,
+      "unit_price" : -500
+    },
+    {
+      "description" : "ROTISSERIE CHKN",
+      "line_total" : 799,
+      "qty" : 1,
+      "unit_price" : 799
+    }
+  ],
+  "merchant" : "Costco Wholesale",
+  "parse_status" : "parsed",
+  "purchased_at" : "2026-10-21T17:05:00-04:00",
+  "purchased_on" : "2026-10-21",
+  "subtotal" : 3547,
+  "tax" : 247,
+  "total" : 3794
+}

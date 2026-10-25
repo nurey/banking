@@ -1,0 +1,29 @@
+{
+  "items" : [
+    {
+      "description" : "MED ORIGINAL",
+      "line_total" : 229,
+      "qty" : 1,
+      "unit_price" : 229
+    },
+    {
+      "description" : "EVERYTHING BAGEL",
+      "line_total" : 199,
+      "qty" : 1,
+      "unit_price" : 199
+    },
+    {
+      "description" : "CREAM CHEESE",
+      "line_total" : 89,
+      "qty" : 1,
+      "unit_price" : 89
+    }
+  ],
+  "merchant" : "Tim Hortons",
+  "parse_status" : "parsed",
+  "purchased_at" : "2026-10-22T07:48:00-04:00",
+  "purchased_on" : "2026-10-22",
+  "subtotal" : 517,
+  "tax" : 67,
+  "total" : 584
+}
