@@ -1,0 +1,14 @@
+{
+  "merchant": "Loblaws",
+  "purchased_on": "2026-10-24",
+  "purchased_at": "2026-10-24T11:40:00-04:00",
+  "subtotal": 746,
+  "tax": 97,
+  "total": 843,
+  "card_last_four": "0298",
+  "parse_status": "parsed",
+  "items": [
+    { "description": "BANANAS", "qty": 1.234, "unit_price": 79, "line_total": 97 },
+    { "description": "PC MILK 2% 4L", "qty": 1, "unit_price": 649, "line_total": 649 }
+  ]
+}

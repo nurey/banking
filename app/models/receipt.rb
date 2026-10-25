@@ -36,6 +36,62 @@ class Receipt < ApplicationRecord
     images_attachments.sort_by(&:id)
   end
 
+  # Writes the parser's fields and items, keeps its untouched output in
+  # `parsed`, and sets the status from ReceiptValidator. A confirmed receipt is
+  # a person's final answer, so it's left alone.
+  #
+  # @rbs result: ReceiptParser::Result
+  # @rbs return: void
+  def apply_parse(result)
+    return if confirmed?
+
+    reasons = ReceiptValidator.for_result(result, confidences: ocr_lines.map { it["confidence"].to_f })
+    transaction do
+      replace_line_items(result.items.map(&:to_h))
+      update!(
+        **result.to_h.slice(:merchant, :purchased_on, :purchased_at, :subtotal, :tax, :total, :card_last_four),
+        taxes: result.taxes.map(&:to_h),
+        parsed: result.as_json,
+        parser_version: ReceiptParser::VERSION,
+        review_reasons: reasons,
+        parse_status: reasons.empty? ? "parsed" : "needs_review"
+      )
+    end
+  end
+
+  # The capture and images stay; only the extracted fields are missing.
+  #
+  # @rbs error: StandardError
+  # @rbs return: void
+  def record_parse_failure(error)
+    failed_step = error.step.name.demodulize if error.is_a?(ReceiptParser::StepError)
+    update!(
+      parse_status: "failed",
+      parser_version: ReceiptParser::VERSION,
+      parsed: { "error" => error.message, "failed_step" => failed_step }.compact
+    )
+  end
+
+  # Re-checks the current, possibly hand-edited, values.
+  #
+  # @rbs return: void
+  def revalidate!
+    reasons = ReceiptValidator.for_receipt(self)
+    update!(review_reasons: reasons, parse_status: reasons.empty? ? "parsed" : "needs_review")
+  end
+
+  # Replaces every line item, numbering them in array order.
+  #
+  # @rbs items: Array[Hash[Symbol, untyped]]
+  # @rbs return: void
+  def replace_line_items(items)
+    line_items.delete_all
+    items.each_with_index do |item, position|
+      line_items.create!(**item.slice(:description, :qty, :unit_price, :line_total, :sku), position:)
+    end
+    line_items.reset
+  end
+
   # @rbs return: Hash[Symbol, untyped]
   def as_api_json
     {
