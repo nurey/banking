@@ -26,6 +26,11 @@ class Receipt < ApplicationRecord
   validate :images_acceptable
   validate :thumbnail_acceptable
 
+  # Unconfirmed receipts that an older parser (or none) produced.
+  scope :needing_reparse, -> {
+    where.not(parse_status: "confirmed").where("parser_version IS NULL OR parser_version < ?", ReceiptParser::VERSION)
+  }
+
   # URLs and lookups use the device's capture_id, never the internal id.
   #
   # @rbs return: String?
@@ -70,6 +75,30 @@ class Receipt < ApplicationRecord
       parser_version: ReceiptParser::VERSION,
       parsed: { "error" => error.message, "failed_step" => failed_step }.compact
     )
+  end
+
+  # Runs the current parser again. A confirmed receipt is skipped, or with
+  # force gets only its `parsed` output rewritten, never the human-edited fields.
+  #
+  # @rbs force: bool
+  # @rbs return: :reparsed | :parsed_only | :skipped | :failed
+  def reparse!(force: false)
+    return :skipped if confirmed? && !force
+
+    result = ReceiptParser.call(ocr_lines:, captured_at:)
+    if confirmed?
+      update!(parsed: result.as_json, parser_version: ReceiptParser::VERSION)
+      :parsed_only
+    else
+      apply_parse(result)
+      :reparsed
+    end
+  rescue StandardError => e
+    raise if confirmed?
+
+    Rails.logger.error("Receipt #{capture_id} re-parse failed: #{e.class}: #{e.message}")
+    record_parse_failure(e)
+    :failed
   end
 
   # Re-checks the current, possibly hand-edited, values.
