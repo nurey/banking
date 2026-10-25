@@ -31,6 +31,10 @@ env:
     - RAILS_MASTER_KEY
     - POSTGRES_PASSWORD
 
+# The base deploy.yml mounts optiplex's receipt storage; production has no
+# receipt uploads (no RECEIPTS_API_TOKEN), so don't inherit the host path.
+volumes: []
+
 # Use a different ssh user than root
 ssh:
   user: ilia

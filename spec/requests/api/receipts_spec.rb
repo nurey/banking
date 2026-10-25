@@ -159,6 +159,12 @@ RSpec.describe "/api/receipts" do
       expect(json["thumbnail"]).to include("url" => "/api/receipts/#{capture_id}/thumbnail")
     end
 
+    it "accepts the capture document as a file part, as curl -F receipt=@file sends it" do
+      document = Rack::Test::UploadedFile.new(StringIO.new(capture.to_json), "application/json", original_filename: "receipt.json")
+      post "/api/receipts", params: { receipt: document, images: [ page_upload ] }, headers: auth
+      expect(response).to have_http_status(:created), response.body
+    end
+
     it "copies only the listed fields from the capture document" do
       post_capture(capture.merge(
         "parse_status" => "confirmed", "confirmed_at" => "2026-10-24T12:00:00Z",

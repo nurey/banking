@@ -28,9 +28,21 @@ env:
     POSTGRES_USER: budgetr_app
     POSTGRES_DB: banking_production
     WEB_CONCURRENCY: "auto"
+    # The budgetr web frontend on optiplex is the only browser origin that
+    # needs the API. Unset, cors.rb falls back to "*".
+    CORS_ORIGINS: http://budgetr.lan
   secret:
     - RAILS_MASTER_KEY
     - POSTGRES_PASSWORD
+    # Bearer token for /api/receipts (the receipt-scanner iPhone app).
+    # deploy.production.yml has its own secret list, so production never gets
+    # it and the endpoint fails closed there.
+    - RECEIPTS_API_TOKEN
+
+# Receipt images (Active Storage, Disk service at /rails/storage). The host
+# directory is created, owned by uid 1000, and backed up by the homelab repo.
+volumes:
+  - "/var/lib/budgetr/storage:/rails/storage"
 
 # Use a different ssh user than root
 ssh:
@@ -66,6 +78,12 @@ proxy:
     path: /up
     interval: 1
     timeout: 5
+
+  # A receipt upload is up to 8 pages of 8 MB plus its OCR JSON. Buffering
+  # makes the proxy write the body to disk before handing it to the app.
+  buffering:
+    requests: true
+    max_request_body: 70_000_000
 
   # Bind the published proxy ports to the LAN IP only, not 0.0.0.0.
   #
