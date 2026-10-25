@@ -4,6 +4,9 @@
 class ReceiptLineItem < ApplicationRecord
   belongs_to :receipt
 
+  validates :line_total, presence: true
+  validates :description, exclusion: { in: [ nil ], message: "can't be missing" }
+
   # @rbs return: Hash[Symbol, untyped]
   def as_api_json
     { position:, description:, qty: qty&.to_f, unit_price:, line_total: }
