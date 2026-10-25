@@ -60,6 +60,14 @@ RSpec.describe ReceiptParser::Steps::ExtractItems do
     expect(result.items).to eq([ item("ORGANIC BANANAS", 1, 97, 97) ])
   end
 
+  it "takes the description from the row above when the price row holds only a weight" do
+    result = extract(
+      classified("PREMIUM BANANA", :other),
+      classified("1.480 kg @ $1.96/kg 2.90", :item, quantity: ReceiptParser::Quantity.new(qty: BigDecimal("1.48"), unit_price: 196))
+    )
+    expect(result.items).to eq([ item("PREMIUM BANANA", BigDecimal("1.48"), 196, 290) ])
+  end
+
   it "keeps a leading SKU apart from the description" do
     result = extract(classified("1234567 KIRKLAND TOWELS 23.99 Y", :item))
     expect(result.items).to eq([ item("KIRKLAND TOWELS", 1, 2399, 2399, sku: "1234567") ])
