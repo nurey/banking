@@ -45,5 +45,10 @@ module Banking
     # API token. The /rails/active_storage/* routes would serve any blob to anyone
     # holding a signed URL, so they're not drawn at all.
     config.active_storage.draw_routes = false
+
+    # No libvips or ImageMagick in the image (89fc4d0): the phone uploads its own
+    # thumbnail, so nothing makes variants. Without this, boot warns about the
+    # missing image_processing gem.
+    config.active_storage.variant_processor = :disabled
   end
 end
