@@ -54,7 +54,8 @@ Steps 1 and 2 are done (2026-10-25). In order:
    (`1000:1000`, `0750`), adds it to the nightly backup, and adds the `tailscale serve --https=8443`
    entry for `/api` only. Apply it **before** the deploy, or Docker creates the volume directory as
    root and the container (uid 1000) can't write to it. Include the backup role, which renders the
-   nightly script: `ansible-playbook site.yml --limit optiplex_local --tags budgetr,backup`.
+   nightly script. From the Mac (`optiplex_local` is a local connection, for running on optiplex itself):
+   `ansible-playbook site.yml --limit optiplex_remote -K --tags budgetr,backup`.
 4. **Deploy** this branch to optiplex: `kamal deploy`. The entrypoint's `db:prepare` runs the two new
    migrations. Production (`-d production`) can follow at any time: it gets the tables but no token,
    so its endpoint answers 401.
