@@ -65,7 +65,7 @@ Steps 1 and 2 are done (2026-10-25). In order:
    curl -i https://optiplex.tail99a066.ts.net:8443/graphql                 # 404 from Tailscale, not Rails
    curl -i https://optiplex.tail99a066.ts.net:8443/up                      # 404 from Tailscale
    curl -i -H "Authorization: Bearer $TOKEN" \
-     -F "receipt=@contract/create_receipt.request.json;type=application/json" \
+     -F "receipt=@spec/fixtures/contract/create_receipt.request.json;type=application/json" \
      -F "images[]=@spec/fixtures/files/page.jpg;type=image/jpeg" \
      https://optiplex.tail99a066.ts.net:8443/api/receipts                   # 201
    ```
