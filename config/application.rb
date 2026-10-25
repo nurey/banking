@@ -3,8 +3,9 @@ require_relative "boot"
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
-# require "active_job/railtie"
+require "active_job/railtie"
 require "active_record/railtie"
+require "active_storage/engine"
 require "action_controller/railtie"
 # require "action_mailer/railtie"
 # require "action_mailbox/engine"
@@ -39,5 +40,10 @@ module Banking
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # Receipt images are served only by Api::ReceiptImagesController, behind the
+    # API token. The /rails/active_storage/* routes would serve any blob to anyone
+    # holding a signed URL, so they're not drawn at all.
+    config.active_storage.draw_routes = false
   end
 end
