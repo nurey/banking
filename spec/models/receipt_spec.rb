@@ -171,7 +171,7 @@ RSpec.describe Receipt do
 
       expect(receipt).to have_attributes(
         merchant: "Loblaws", purchased_on: Date.new(2026, 10, 24), subtotal: 746, tax: 97, total: 843,
-        card_last_four: "0298", parse_status: "parsed", review_reasons: [], parser_version: ReceiptParser::VERSION
+        card_last_four: "4242", parse_status: "parsed", review_reasons: [], parser_version: ReceiptParser::VERSION
       )
       expect(receipt.taxes).to eq([ { "label" => "HST", "rate" => 13.0, "amount" => 97 } ])
       expect(receipt.line_items.map { [ it.position, it.description, it.qty.to_f, it.unit_price, it.line_total ] })

@@ -90,7 +90,7 @@ RSpec.describe "/api/receipts" do
       expect(json.keys).to match_array(contract.keys)
       expect(json).to include(
         "capture_id" => capture_id, "parse_status" => "parsed", "merchant" => "Loblaws", "total" => 843,
-        "purchased_on" => "2026-10-24", "card_last_four" => "0298", "thumbnail" => nil
+        "purchased_on" => "2026-10-24", "card_last_four" => "4242", "thumbnail" => nil
       )
       expect(json["images"].map { it.except("byte_size") }).to eq([
         { "page" => 0, "url" => "/api/receipts/#{capture_id}/images/0" },
@@ -244,7 +244,7 @@ RSpec.describe "/api/receipts" do
       expect(log).to include("Parameters:")
       expect(log).to include("[FILTERED]")
       expect(log).not_to include("LOBLAWS")
-      expect(log).not_to include("0298")
+      expect(log).not_to include("4242")
     end
 
     describe "thumbnail" do

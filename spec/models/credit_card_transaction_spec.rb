@@ -9,11 +9,11 @@ RSpec.describe CreditCardTransaction do
     end
 
     it "extracts the last four from a partially masked card number" do
-      expect(last_four("5268********0298")).to eq("0298")
+      expect(last_four("5555********4242")).to eq("4242")
     end
 
     it "extracts the last four from a fully masked prefix" do
-      expect(last_four("************8525")).to eq("8525")
+      expect(last_four("************1111")).to eq("1111")
     end
 
     it "returns a bare last-four unchanged" do
@@ -25,7 +25,7 @@ RSpec.describe CreditCardTransaction do
     end
 
     it "ignores spaces and dashes" do
-      expect(last_four("4505-****-****-9649")).to eq("9649")
+      expect(last_four("4111-****-****-0004")).to eq("0004")
     end
 
     it "returns nil when there are no digits" do

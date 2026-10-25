@@ -7,7 +7,7 @@ module Types
     field :debit, Integer, null: true
     field :credit, Integer, null: true
     field :card_number, String, null: true,
-      description: 'The last four digits of the card used (e.g. "0298")'
+      description: 'The last four digits of the card used (e.g. "4242")'
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     field :note, Types::NoteType, null: true,

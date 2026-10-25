@@ -11,7 +11,7 @@
   "tax": 270,
   "taxes": [{ "label": "HST", "rate": 13.0, "amount": 270 }],
   "total": 2345,
-  "card_last_four": "0298",
+  "card_last_four": "4242",
   "items": [
     { "position": 0, "description": "BANANAS", "qty": 1.234, "unit_price": 79, "line_total": 97 },
     { "position": 1, "description": "PC MILK 2% 4L", "qty": 1, "unit_price": 649, "line_total": 649 }

@@ -2,7 +2,7 @@
   "capture_id": "6f1c2a1e-6c39-4c0e-9d0e-0a7d5b1f3c22",
   "captured_at": "2026-10-24T11:42:10-04:00",
   "currency": "CAD",
-  "raw_text": "LOBLAWS #1234\n2026-10-24 11:40\nBANANAS\n1.234 kg @ $0.79/kg\n0.97\nPC MILK 2% 4L\n6.49\nSUBTOTAL\n7.46\nHST 13%\n0.97\nTOTAL\n8.43\nVISA ************0298\n8.43",
+  "raw_text": "LOBLAWS #1234\n2026-10-24 11:40\nBANANAS\n1.234 kg @ $0.79/kg\n0.97\nPC MILK 2% 4L\n6.49\nSUBTOTAL\n7.46\nHST 13%\n0.97\nTOTAL\n8.43\nVISA ************4242\n8.43",
   "ocr_lines": [
     { "page": 0, "text": "LOBLAWS #1234", "x": 0.30, "y": 0.040, "w": 0.40, "h": 0.022, "confidence": 1.0 },
     { "page": 0, "text": "2026-10-24 11:40", "x": 0.08, "y": 0.090, "w": 0.36, "h": 0.018, "confidence": 1.0 },
@@ -17,7 +17,7 @@
     { "page": 0, "text": "0.97", "x": 0.82, "y": 0.351, "w": 0.10, "h": 0.019, "confidence": 1.0 },
     { "page": 0, "text": "TOTAL", "x": 0.08, "y": 0.400, "w": 0.14, "h": 0.018, "confidence": 1.0 },
     { "page": 0, "text": "8.43", "x": 0.82, "y": 0.401, "w": 0.10, "h": 0.019, "confidence": 1.0 },
-    { "page": 0, "text": "VISA ************0298", "x": 0.08, "y": 0.450, "w": 0.46, "h": 0.018, "confidence": 1.0 },
+    { "page": 0, "text": "VISA ************4242", "x": 0.08, "y": 0.450, "w": 0.46, "h": 0.018, "confidence": 1.0 },
     { "page": 0, "text": "8.43", "x": 0.82, "y": 0.451, "w": 0.10, "h": 0.019, "confidence": 1.0 }
   ],
   "ocr": {

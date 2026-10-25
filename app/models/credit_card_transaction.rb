@@ -39,7 +39,7 @@ class CreditCardTransaction < ApplicationRecord
   end
 
   # Card numbers arrive from the bank export in a handful of shapes: a masked
-  # PAN ("5268********0298", "************8525"), an unmasked PAN, or just the
+  # PAN ("5555********4242", "************1111"), an unmasked PAN, or just the
   # last four digits ("1234"). They are stored verbatim because the raw value
   # participates in the dedup unique indexes, so normalize on read. Returning
   # only the last four means no readable PAN can leave the API.

@@ -17,7 +17,7 @@ module ReceiptParser::Steps
     NOT_TOTAL = /\b(?:SAVINGS?|SAVED|DISCOUNTS?|ITEMS?|NUMBER|POINTS|ARTICLES?|[EÉ]CONOMIES?)\b/i
     PAYMENT = /\b(?:VISA|MASTERCARD|MC|AMEX|DEBIT|INTERAC|CASH|CHANGE|TENDER(?:ED)?|APPROVED|AUTH)\b/i
     CARD = /(?:\*{4,}|X{4,})\s*(\d{4})(?!\d)/i
-    # Vision collapses long runs of * or X ("**0298", "XXX1234"), so on a
+    # Vision collapses long runs of * or X ("**4242", "XXX1234"), so on a
     # payment row a shorter mask counts too.
     PAYMENT_CARD = /(?:\*+|X{2,}|\#+)\s*(\d{4})(?!\d)/i
     RATE = /(?<!\d)(\d{1,2}(?:[.,]\d{1,3})?)\s*%/

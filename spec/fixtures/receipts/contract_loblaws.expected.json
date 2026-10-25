@@ -5,7 +5,7 @@
   "subtotal": 746,
   "tax": 97,
   "total": 843,
-  "card_last_four": "0298",
+  "card_last_four": "4242",
   "parse_status": "parsed",
   "items": [
     { "description": "BANANAS", "qty": 1.234, "unit_price": 79, "line_total": 97 },
