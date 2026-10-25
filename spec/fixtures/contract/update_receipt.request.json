@@ -1,0 +1,9 @@
+{
+  "merchant": "Loblaws",
+  "purchased_on": "2026-10-24",
+  "purchased_at": null,
+  "subtotal": 2075, "tax": 270, "total": 2345,
+  "taxes": [{ "label": "HST", "rate": 13.0, "amount": 270 }],
+  "items": [ { "description": "BANANAS", "qty": 1.234, "unit_price": 79, "line_total": 97 } ],
+  "confirm": true
+}
