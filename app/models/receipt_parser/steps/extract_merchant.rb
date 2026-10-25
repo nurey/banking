@@ -4,7 +4,8 @@
 module ReceiptParser::Steps
   # The first row on page 0 with at least three letters that isn't a greeting,
   # an address, a phone number, a URL, a date, or a bare store number,
-  # title-cased, with any store number dropped ("LOBLAWS #1234" → "Loblaws").
+  # title-cased, with any store number and trailing punctuation dropped
+  # ("LOBLAWS #1234" → "Loblaws", "Longos." → "Longos").
   class ExtractMerchant
     READS = %i[rows].freeze
     WRITES = %i[merchant].freeze
@@ -32,7 +33,7 @@ module ReceiptParser::Steps
       return if [ WELCOME, PHONE, URL, POSTAL_CODE, DATE_OR_TIME ].any? { text.match?(it) }
       return if text.match?(/\A\s*\d+\w?\s+\S/) || (text.match?(/\d/) && text.match?(STREET))
 
-      name = text.gsub(STORE_NUMBER, " ").squish
+      name = text.gsub(STORE_NUMBER, " ").squish.sub(/[\s.,:;]+\z/, "")
       return if name.scan(/\p{L}/).size < 3
 
       name.downcase.split.map(&:capitalize).join(" ")

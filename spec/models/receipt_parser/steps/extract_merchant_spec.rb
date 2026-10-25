@@ -12,6 +12,12 @@ RSpec.describe ReceiptParser::Steps::ExtractMerchant do
     expect(merchant("SHOPPERS DRUG MART")).to eq("Shoppers Drug Mart")
   end
 
+  it "never ends a name with a period or other trailing punctuation" do
+    expect(merchant("Longos.")).to eq("Longos")
+    expect(merchant("METRO .")).to eq("Metro")
+    expect(merchant("NO FRILLS,:")).to eq("No Frills")
+  end
+
   it "skips welcome lines, addresses, phone numbers, URLs and store numbers" do
     expect(merchant(
       "WELCOME", "BIENVENUE", "STORE #1234", "123 MAIN ST", "TORONTO ON M5V 2T6",
