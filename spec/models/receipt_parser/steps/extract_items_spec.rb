@@ -73,6 +73,11 @@ RSpec.describe ReceiptParser::Steps::ExtractItems do
     expect(result.items).to eq([ item("KIRKLAND TOWELS", 1, 2399, 2399, sku: "1234567") ])
   end
 
+  it "keeps a trailing barcode apart from the description" do
+    result = extract(classified("BKF SFTCLNSR 071618116370 $5.98 J", :item), classified("BROTH 900ML 1.47", :item))
+    expect(result.items).to eq([ item("BKF SFTCLNSR", 1, 598, 598, sku: "071618116370"), item("BROTH 900ML", 1, 147, 147) ])
+  end
+
   it "makes discount rows negative items" do
     result = extract(classified("TPD/1234567 5.00-", :item), classified("COUPON 1.50", :item))
     expect(result.items.map(&:line_total)).to eq([ -500, -150 ])

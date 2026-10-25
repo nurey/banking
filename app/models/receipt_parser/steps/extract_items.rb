@@ -12,6 +12,8 @@ module ReceiptParser::Steps
 
     DISCOUNT = /\b(?:COUPON|DISCOUNT|RABAIS|REMISE|SAVINGS|[EÉ]CONOMIE)\b/i
     SKU = /\A(\d{4,})\s+/
+    # A UPC/EAN printed after the name (Walmart: `BKF SFTCLNSR 071618116370`)
+    BARCODE = /\s+(\d{8,14})\z/
 
     # @rbs ctx: ReceiptParser::Context
     # @rbs return: ReceiptParser::Context
@@ -75,7 +77,8 @@ module ReceiptParser::Steps
       ReceiptParser::Item.new(description:, qty:, unit_price:, line_total:, sku:)
     end
 
-    # The text left of the row's amount, without a printed quantity or a leading SKU.
+    # The text left of the row's amount, without a printed quantity, a leading SKU
+    # or a trailing barcode.
     #
     # @rbs text: String
     # @rbs return: [String?, String]
@@ -85,7 +88,9 @@ module ReceiptParser::Steps
       text = text.sub(ClassifyRows::QUANTITY, "").sub(ClassifyRows::MULTI_BUY, "")
       sku = text[SKU, 1]
       text = text.sub(SKU, "") if sku
-      [ sku, text.squish ]
+      barcode = text.rstrip[BARCODE, 1]
+      text = text.rstrip.sub(BARCODE, "") if barcode
+      [ sku || barcode, text.squish ]
     end
 
     # When the price sits on its own row, the description is the row above it.
