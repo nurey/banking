@@ -11,7 +11,7 @@ class ReceiptLineItem < ApplicationRecord
 
   # @rbs return: Hash[Symbol, untyped]
   def as_api_json
-    { position:, description:, qty: qty&.to_f, unit_price:, line_total: }
+    { position:, description:, qty: qty&.to_f, unit_price:, line_total:, sku: }
   end
 end
 

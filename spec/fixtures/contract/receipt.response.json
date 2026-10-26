@@ -13,8 +13,8 @@
   "total": 2345,
   "card_last_four": "4242",
   "items": [
-    { "position": 0, "description": "BANANAS", "qty": 1.234, "unit_price": 79, "line_total": 97 },
-    { "position": 1, "description": "PC MILK 2% 4L", "qty": 1, "unit_price": 649, "line_total": 649 }
+    { "position": 0, "description": "BANANAS", "qty": 1.234, "unit_price": 79, "line_total": 97, "sku": "4011" },
+    { "position": 1, "description": "PC MILK 2% 4L", "qty": 1, "unit_price": 649, "line_total": 649, "sku": null }
   ],
   "images": [{ "page": 0, "url": "/api/receipts/6f1c2a1e-6c39-4c0e-9d0e-0a7d5b1f3c22/images/0", "byte_size": 1203344 }],
   "thumbnail": { "url": "/api/receipts/6f1c2a1e-6c39-4c0e-9d0e-0a7d5b1f3c22/thumbnail", "byte_size": 31877 },

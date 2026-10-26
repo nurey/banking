@@ -452,7 +452,7 @@ RSpec.describe "/api/receipts" do
       expect(response).to have_http_status(:ok)
       expect(json).to include("parse_status" => "confirmed", "merchant" => "Loblaws", "subtotal" => 2075, "total" => 2345)
       expect(json["confirmed_at"]).to be_present
-      expect(json["items"]).to eq([ { "position" => 0, "description" => "BANANAS", "qty" => 1.234, "unit_price" => 79, "line_total" => 97 } ])
+      expect(json["items"]).to eq([ { "position" => 0, "description" => "BANANAS", "qty" => 1.234, "unit_price" => 79, "line_total" => 97, "sku" => "4011" } ])
       expect(json["taxes"]).to eq([ { "label" => "HST", "rate" => 13.0, "amount" => 270 } ])
       expect(json["review_reasons"]).to include("items_sum_mismatch")
     end

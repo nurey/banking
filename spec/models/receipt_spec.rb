@@ -118,7 +118,7 @@ RSpec.describe Receipt do
     it "has exactly the contract's keys" do
       receipt = build_receipt(thumbnail: upload("thumbnail.jpg"))
       receipt.save!
-      receipt.line_items.create!(position: 0, description: "BANANAS", qty: 1.234, unit_price: 79, line_total: 97)
+      receipt.line_items.create!(position: 0, description: "BANANAS", qty: 1.234, unit_price: 79, line_total: 97, sku: "4011")
       json = receipt.reload.as_api_json.deep_stringify_keys
 
       expect(json.keys).to match_array(contract.keys)
