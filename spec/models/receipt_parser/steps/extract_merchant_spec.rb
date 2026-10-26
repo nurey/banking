@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe ReceiptParser::Steps::ExtractMerchant do
-  def merchant(*texts)
-    described_class.new.call(context(rows: rows(*texts))).merchant
+  def merchant(*texts, known_addresses: {})
+    described_class.new(known_addresses:).call(context(rows: rows(*texts))).merchant
   end
 
   it "takes the first row with a name and title-cases it" do
@@ -23,6 +23,30 @@ RSpec.describe ReceiptParser::Steps::ExtractMerchant do
       "WELCOME", "BIENVENUE", "STORE #1234", "123 MAIN ST", "TORONTO ON M5V 2T6",
       "(416) 555-0199", "TEL 416.555.0199", "www.example.ca", "ORDER 2026-10-24 11:40", "** ", "TIM HORTONS"
     )).to eq("Tim Hortons")
+  end
+
+  it "skips a city and province line" do
+    expect(merchant("Toronto, Ontario", "CORNER GROCER")).to eq("Corner Grocer")
+    expect(merchant("MONTRÉAL, QC", "TORONTO ON", "IGA")).to eq("Iga")
+  end
+
+  it "stops at the transaction details when no name is printed above them" do
+    expect(merchant("123 Main Street", "Toronto, Ontario", "(416) 555-0199", "Lane: 001", "Cashier: 156", "** MEAT **")).to be_nil
+    expect(merchant("Tel: (416) 555-0199", "METRO")).to eq("Metro")
+  end
+
+  it "names a store that prints only its address from the address" do
+    known_addresses = { "123 MAIN": "Corner Grocer" }
+    expect(merchant("123 Main Street", "Toronto, Ontario", "Lane: 001", known_addresses:)).to eq("Corner Grocer")
+    expect(merchant("123  MAIN ST", "TORONTO ON", known_addresses:)).to eq("Corner Grocer")
+    expect(merchant("1234 Main Street", "Toronto, Ontario", known_addresses:)).to be_nil
+    expect(merchant("123 Mainland Ave", known_addresses:)).to be_nil
+  end
+
+  it "reads the known addresses from the encrypted credentials" do
+    allow(Rails.application.credentials).to receive(:dig).and_call_original
+    allow(Rails.application.credentials).to receive(:dig).with(:receipt_parser, :known_addresses).and_return({ "123 MAIN": "Corner Grocer" })
+    expect(described_class.new.call(context(rows: rows("123 Main Street"))).merchant).to eq("Corner Grocer")
   end
 
   it "only looks at page 0" do
